@@ -212,3 +212,52 @@ See [PyPI](https://pypi.org/project/guardtrellis/) for the latest published vers
 the [README](README.md) for installation instructions matching this source checkout.
 A merged contribution does not itself trigger publication.
 The project is Apache-2.0 licensed; preserve applicable notices when adding third-party material.
+
+## CodeQL workflow draft and activation
+
+The [advanced CodeQL workflow](.github/workflows/codeql.yml) is a candidate for review;
+publishing it does not activate advanced setup. GitHub-managed default setup remains
+enabled until the separately approved transition.
+Python and Actions use the default query suite, remote-source threat model and standard
+GitHub-hosted runners. The draft adds explicit PR, push-to-main, weekly and manual
+triggers without path/actor exclusions or application installation/build steps. Its
+Friday 07:35 UTC schedule preserves weekly scanning and matches previously observed
+scheduled runs; default setup's API exposes only the weekly frequency.
+
+Publication, the security-setting transition and the bootstrap merge are separately
+authorized steps. [Default setup blocks advanced CodeQL uploads](https://docs.github.com/en/code-security/reference/code-scanning/sarif-files/troubleshoot-sarif-uploads/default-setup-enabled),
+so do not assume that publishing this file while default setup is enabled proves it works.
+Keep a snapshot of the current default configuration and rulesets, preserve all required
+checks and analysis history, and hold Dependabot and unrelated merges while the
+transition is being validated. A workflow-only bootstrap requires its own explicit
+merge approval; publication approval does not provide it.
+Do not delete historical configurations merely to clear a missing-analysis summary.
+
+The separately approved activation sequence is:
+
+1. Commit/push a workflow-only PR and review it. Default setup must be deliberately
+   transitioned before treating advanced uploads as valid; publishing the draft alone
+   does not perform that transition.
+2. After approval to change setup, require actual successful Python and Actions jobs,
+   processed uploads, reviewed findings and every unchanged required CI check on that
+   workflow PR. The first PR cannot yet have a comparable advanced baseline on `main`;
+   inspect its actual analysis records rather than claiming a missing-configuration
+   summary is green.
+3. Obtain explicit approval for that workflow-only bootstrap merge. Then establish
+   successful Python and Actions analyses on the resulting `main` revision before
+   accepting comparisons for other PRs.
+4. Refresh the existing Dependabot branches with separate authorization and verify
+   both languages against each current PR head or a merge revision with the expected
+   base/head parents, plus native Windows and all existing required checks.
+
+Keep both `/language:python` and `/language:actions` categories, but verify the new
+workflow's analysis key: its path differs from the GitHub-managed configuration.
+The workflow must be present on the default branch for
+[manual dispatch](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch).
+Existing Dependabot branches predate this file and need an explicitly approved refresh
+before assuming the workflow is available at those refs. A manual branch scan is a
+diagnostic; it does not replace the actual PR-event validation above.
+
+If activation fails, keep merges on hold, disable the new workflow before re-enabling
+the saved default setup, and verify its original Python/Actions settings and weekly
+schedule. Do not widen token permissions or relax merge protections as a workaround.
