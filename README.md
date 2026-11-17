@@ -221,6 +221,12 @@ validates and authorizes a call, executes it, then checks its returned text at `
 before the next consumer receives it. It uses core dependencies and the current public APIs.
 The host must route every raw-return path through this check; it cannot undo execution side effects.
 
+The optional [metrics-only sibling](docs/observability.md) observes that retrieval scan's
+count, outcome and elapsed time while preserving checked consumption. Telemetry is disabled
+by default; the source-checkout `observability` group enables an in-memory demonstration
+with a complete exported-metadata allowlist. Host telemetry configuration and lifecycle
+remain application responsibilities.
+
 FastAPI and LangGraph are optional extras (`.[fastapi]`, `.[langgraph]`). LangGraph input
 checks run **before** text enters graph state. The example also checks model output before
 returning it to graph state. Instrumentation around callbacks may still capture raw data.

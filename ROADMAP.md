@@ -65,6 +65,7 @@ observed integration gaps over adding scanner families or framework wrappers for
 | --- | --- | --- | --- |
 | Merged; publication pending | Gemini SDK 3 / HTTPX2 migration | Complete release closeout, then obtain publication approval and rehearse/promote the same artifacts; preserve core behavior. | [#96](https://github.com/sahilmathur254/guardtrellis/issues/96) Done through [#97](https://github.com/sahilmathur254/guardtrellis/pull/97); targets `0.2.0`; dependency-only [#95](https://github.com/sahilmathur254/guardtrellis/pull/95) closed as superseded |
 | Completed; follow-ups as needed | Tool-result handoff | Use the checked tool-result recipe before the next model call or agent-state insertion, using the existing API. | [#44](https://github.com/sahilmathur254/guardtrellis/issues/44) closed; shipped in `0.1.4` |
+| Implementation candidate; under review | Optional retrieval-check metrics | Observe scan count/outcome/time with the disabled-by-default [source recipe](docs/observability.md), preserving checked delivery and a complete static exported-metadata allowlist. | Design [#48](https://github.com/sahilmathur254/guardtrellis/issues/48) accepted; implementation [#101](https://github.com/sahilmathur254/guardtrellis/issues/101); `0.2.1` candidate, not a release commitment |
 | Completed; shared API deferred | Structured values | Build on the bounded decoded `search.query` recipe shipped in `0.1.3`; require a concrete caller gap before a shared checker. | Design [#11](https://github.com/sahilmathur254/guardtrellis/issues/11); implementation [#41](https://github.com/sahilmathur254/guardtrellis/issues/41) closed |
 | Completed; follow-ups as needed | Escaped JSON contact workflow | Use the fixed two-field application helper, whole-call budgets and checked delivery without changing SDK defaults. | Design [#50](https://github.com/sahilmathur254/guardtrellis/issues/50) accepted 2026-10-18; implementation [#62](https://github.com/sahilmathur254/guardtrellis/issues/62) closed; shipped in `0.1.5` |
 | Completed; follow-ups as needed | Formatted international phones | Select the bounded phone mode explicitly and compare complete checked outcomes with retained baselines. | [#60](https://github.com/sahilmathur254/guardtrellis/issues/60) closed; shipped in `0.1.6` |
@@ -84,6 +85,23 @@ surfaces need an explicit versioning decision; planned incompatible changes requ
 migration guidance and a later minor release. The accepted Gemini dependency-major
 transition targets `0.2.0`; the other workstreams do not become part of that batch by
 default, and no delivery date is promised.
+
+## 0.2.1 implementation candidate: retrieval-check metrics
+
+The [accepted #48 contract](docs/observability_design.md) scopes one application-owned,
+metrics-only sibling of the checked tool-result recipe. [#101](https://github.com/sahilmathur254/guardtrellis/issues/101)
+implements the [guide and helper](docs/observability.md), optional source-checkout dependency
+profiles and exported-envelope/fault regressions. It preserves SDK APIs/defaults,
+the original handoff policy and core dependencies; spans and a reusable adapter remain deferred.
+
+This implementation candidate is under review. The 2,128-test strict baseline, focused
+regressions, fresh disabled/minimum/locked profiles, existing evaluations, lint/types,
+builds, strict package metadata and fresh distribution smokes passed locally. Native
+Windows/macOS/Linux plus Python/Actions CodeQL are required before a later merge
+decision. The accepted design file is a preserved acceptance snapshot; the
+[guide](docs/observability.md#verification-status) records
+implementation status. This is one improvement with tests and documentation within a
+possible `0.2.1` batch, with no version bump, delivery date or release approval implied.
 
 ## Candidate 0.2.0: Gemini SDK 3 / HTTPX2 migration
 

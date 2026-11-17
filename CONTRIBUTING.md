@@ -34,13 +34,17 @@ The runtime depends only on jsonschema and referencing plus their dependencies. 
 model providers, frameworks, network clients, and model downloads out of core dependencies.
 
 ```sh
-uv sync --locked --all-extras --group dev --group build
-uv run pytest
+uv sync --locked --all-extras --group dev --group build --group observability
+uv run --frozen --group observability pytest
 uv run ruff check .
 uv run ruff format --check .
 uv run mypy
 uv run --frozen python scripts/check_gemini_profile.py --profile minimum --regressions
 uv run --frozen python scripts/check_gemini_profile.py --profile locked
+uv run --frozen python scripts/check_observability_profile.py --profile disabled
+uv run --frozen python scripts/check_observability_profile.py --profile minimum --regressions
+uv run --frozen python scripts/check_observability_profile.py --profile locked --regressions
+uv run --frozen --group observability mypy examples/tool_result_metrics.py
 uv run python evaluation/run.py --report-dir /tmp/guardtrellis-eval
 uv run python evaluation/policy_combinations/run.py --report-dir /tmp/guardtrellis-policies
 uv build --offline --no-build-isolation
@@ -112,6 +116,14 @@ For wheel/sdist smokes, only the source-archive environment adds reviewed build 
 The source profile checker seeds that tooling too; `--regressions` adds reviewed
 development tooling only after isolation checks. These isolated profiles supplement
 the existing core/OpenAI-only/all-extras consumer smokes.
+
+The [optional retrieval-check metrics recipe](docs/observability.md) uses the source-only
+`observability` dependency group; it adds no mandatory dependency or installed SDK API.
+Select this group explicitly for focused metric tests and example typing. Its fresh
+disabled profile proves execution without OpenTelemetry; minimum and locked profiles
+inspect real, nonempty SDK exports and the complete metadata allowlist under blocked
+sockets. Their initial API/SDK pair is the same `1.45.2`; separate fresh environments
+do not establish coverage of every version allowed by the declared ranges.
 
 The CI matrix covers these combinations:
 
