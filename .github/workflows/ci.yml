@@ -37,7 +37,12 @@ jobs:
       - name: Check release version agreement
         run: python scripts/release_artifacts.py check
       - name: Install locked dependencies and optional examples
-        run: uv sync --frozen --all-extras --group dev --group build --python '${{ matrix.python }}'
+        run: uv sync --frozen --all-extras --group dev --group build --group observability --python '${{ matrix.python }}'
+      - name: Verify fresh disabled and constrained observability recipe profiles
+        run: |
+          uv run --frozen --group observability python scripts/check_observability_profile.py --profile disabled
+          uv run --frozen --group observability python scripts/check_observability_profile.py --profile minimum --regressions
+          uv run --frozen --group observability python scripts/check_observability_profile.py --profile locked --regressions
       - name: Verify fresh constrained Gemini-only dependency profiles
         run: |
           uv run --frozen python scripts/check_gemini_profile.py --profile minimum
@@ -46,7 +51,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.11'
         run: uv run --frozen python scripts/check_gemini_profile.py --profile minimum --regressions
       - name: Test behavior and runnable examples
-        run: uv run --frozen pytest
+        run: uv run --frozen --group observability pytest
       - name: Check lint, formatting, and types
         run: |
           uv run --frozen ruff check .
@@ -54,6 +59,7 @@ jobs:
           uv run --frozen mypy
           uv run --frozen mypy examples/retrieval_tools.py examples/policy_operations.py examples/decoded_query.py examples/decoded_contact.py examples/tool_result_handoff.py examples/cli_ci.py
           uv run --frozen mypy examples/openai_app.py examples/azure_openai_app.py examples/gemini_app.py
+          uv run --frozen --group observability mypy examples/tool_result_metrics.py
       - name: Reproduce smoke evaluation
         run: uv run --frozen python evaluation/run.py --report-dir '${{ runner.temp }}/guardtrellis-eval'
       - name: Reproduce Unicode and PII challenges
