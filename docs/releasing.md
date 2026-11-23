@@ -1,7 +1,7 @@
 # Releasing GuardTrellis
 
 Use [PyPI](https://pypi.org/project/guardtrellis/) for current availability and
-[release notes](https://github.com/sahilmathur254/guardtrellis/releases) for retained evidence.
+[release notes](https://github.com/guardtrellis/guardtrellis/releases) for retained evidence.
 Use each new candidate's version and rehearsal run rather than rerunning a completed upload.
 The release workflow is
 `.github/workflows/release.yml`. It validates on pull requests and offers three manual
@@ -152,12 +152,47 @@ gh workflow run release.yml --ref main -f target=validate
 The `candidate` artifact contains `dist/`, `release.json`, and `SHA256SUMS`. The manifest also
 appears in the workflow summary. No accounts or publishing credentials are needed for validation.
 
-## One-time account and environment setup
+## Publisher and environment setup
 
 This configuration is a maintainer action and is not performed by committing the workflow.
-Get explicit approval before changing trust/permissions or uploading a package.
+Get explicit approval before changing trust/permissions or uploading a package. The
+[organization migration runbook](organization_migration.md) records the transfer sequence
+and protection checks. The organization values below describe the intended publishing
+identity; a prepared patch does not establish that the transfer or account setup is complete.
 
-Create the GitHub environments `testpypi` and `pypi` in this repository. For each:
+### Existing project: replace the GitHub workflow identity
+
+The `guardtrellis` project already exists separately on PyPI and TestPyPI. Keep those
+projects, the package name and existing author/project-owner records. A Trusted Publisher
+is the GitHub workflow allowed to obtain a short-lived upload token; it is separate from
+the person credited as the package author. GitHub's personal and organization owners have
+different permanent IDs, so changing the repository owner requires replacement registrations.
+A repository redirect does not preserve that publishing identity.
+
+On each existing project's **Publishing** page, add a GitHub publisher with these values:
+
+| Field | TestPyPI | PyPI |
+| --- | --- | --- |
+| GitHub owner | `guardtrellis` | `guardtrellis` |
+| Repository | `guardtrellis` | `guardtrellis` |
+| Workflow filename | `release.yml` | `release.yml` |
+| Environment | `testpypi` | `pypi` |
+
+Use the existing project's Publishing page on
+[TestPyPI](https://test.pypi.org/manage/project/guardtrellis/settings/publishing/)
+and [PyPI](https://pypi.org/manage/project/guardtrellis/settings/publishing/).
+The field takes `release.yml`, not its repository directory path. The two indexes have
+separate accounts/databases and registrations. Both replacement publishers can be prepared
+before transfer without creating a placeholder destination repository. Inspect each entry
+and retain project-owner recovery access before deliberately removing the obsolete personal
+publisher during the approved cutover. A registration or validation-only workflow is not
+proof of a successful OIDC exchange; use the next separately approved release for that proof.
+See [adding a publisher to an existing project](https://docs.pypi.org/trusted-publishers/adding-a-publisher/)
+and [identity matching](https://docs.pypi.org/trusted-publishers/internals/).
+
+### Preserve the publishing environments
+
+Retain the existing GitHub environments `testpypi` and `pypi`. For each:
 
 - Require a reviewer, initially `sahilmathur254`, and restrict deployment branches to `main`.
 - Disable administrator bypass. If the owner is the only reviewer and dispatches the release,
@@ -166,23 +201,16 @@ Create the GitHub environments `testpypi` and `pypi` in this repository. For eac
 
 The workflow checks that required reviewers are configured before it schedules publication;
 a missing environment fails the preflight instead of silently relying on an unprotected one.
+That preflight alone does not verify branch restrictions, bypass or self-review settings:
+compare the transferred environments with the recorded baseline as well.
+See [GitHub environment guidance](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments).
 
-Register separate pending GitHub Trusted Publishers on the two indexes using these exact values:
+### Initial project creation only
 
-| Field | TestPyPI | PyPI |
-| --- | --- | --- |
-| Project name | `guardtrellis` | `guardtrellis` |
-| GitHub owner | `sahilmathur254` | `sahilmathur254` |
-| Repository | `guardtrellis` | `guardtrellis` |
-| Workflow filename | `release.yml` | `release.yml` |
-| Environment | `testpypi` | `pypi` |
-
-Use the account's Publishing page on [TestPyPI](https://test.pypi.org/manage/account/publishing/)
-and [PyPI](https://pypi.org/manage/account/publishing/). TestPyPI has a separate account/database.
-The field takes `release.yml`, not its repository directory path. A profile or pending publisher
-does not reserve a package name; recheck availability before publishing. Follow
-[PyPI's pending-publisher instructions](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/)
-and [GitHub environment guidance](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments).
+For an index where a project genuinely does not exist, use that account's Publishing page
+and [PyPI's pending-publisher instructions](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/).
+A pending publisher does not reserve a package name. This initial-bootstrap process does
+not replace the existing-project procedure above and is not needed for this migration.
 
 ## Rehearse, then promote
 

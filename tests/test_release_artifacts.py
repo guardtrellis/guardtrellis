@@ -20,7 +20,7 @@ from scripts import release_artifacts as release
 COMMIT = "a" * 40
 RUN = "12345"
 ARTIFACT = "67890"
-REPOSITORY = "sahilmathur254/guardtrellis"
+REPOSITORY = "guardtrellis/guardtrellis"
 REHEARSAL_JOBS = ("candidate", "smoke-candidate", "testpypi", "verify-testpypi", "retain-testpypi")
 
 
@@ -532,6 +532,70 @@ def test_release_preserves_manual_targets_and_limits_publishing_identity(release
             assert job["environment"]["name"] == name
         else:
             assert "id-token" not in permissions
+
+
+def test_publishing_repository_matches_canonical_package_and_generated_links():
+    project = release.canonical_project()
+    repository_url = f"https://github.com/{REPOSITORY}"
+    assert project["urls"]["Source"] == repository_url
+    assert project["urls"]["Issues"] == f"{repository_url}/issues"
+    assert project["urls"]["Documentation"] == f"{repository_url}/blob/main/docs/api.md"
+    assert project["urls"]["Changelog"] == f"{repository_url}/blob/main/CHANGELOG.md"
+    assert f"[release notes]({repository_url}/releases)" in release.release_block(project)
+    # A repository transfer does not move the separately owned personal Project.
+    assert project["urls"]["Roadmap"] == "https://github.com/users/sahilmathur254/projects/3"
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Executes an Ubuntu workflow shell command")
+@pytest.mark.parametrize(
+    "job_name,step_name",
+    [
+        ("candidate", "Check publication prerequisites"),
+        ("promote", "Require a successful rehearsal from the same main commit"),
+    ],
+)
+@pytest.mark.parametrize(
+    "repository,ref,may_query_github",
+    [
+        (REPOSITORY, "refs/heads/main", True),
+        ("sahilmathur254/guardtrellis", "refs/heads/main", False),
+        ("other/guardtrellis", "refs/heads/main", False),
+        (REPOSITORY, "refs/heads/other", False),
+    ],
+)
+def test_both_publication_guards_require_the_canonical_main_repository_before_github_calls(
+    tmp_path, release_workflow, job_name, step_name, repository, ref, may_query_github
+):
+    step = next(
+        step for step in release_workflow[job_name]["steps"] if step.get("name") == step_name
+    )
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    calls = tmp_path / "github-calls"
+    gh = bin_dir / "gh"
+    gh.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> "$MIGRATION_GH_CALLS"\nexit 9\n')
+    gh.chmod(0o755)
+    result = subprocess.run(
+        ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", step["run"]],
+        env={
+            **os.environ,
+            "PATH": str(bin_dir) + os.pathsep + os.environ["PATH"],
+            "MIGRATION_GH_CALLS": str(calls),
+            "GITHUB_REPOSITORY": repository,
+            "GITHUB_REF": ref,
+            "GITHUB_SHA": COMMIT,
+            "REHEARSAL_RUN_ID": RUN,
+            "REHEARSAL_ARTIFACT_ID": ARTIFACT,
+        },
+        capture_output=True,
+        text=True,
+        timeout=15,
+        check=False,
+    )
+    # The stub deliberately stops at the first API boundary. The owner/ref guards
+    # must reject every other identity before even reaching that boundary.
+    assert result.returncode != 0
+    assert calls.exists() is may_query_github
 
 
 @pytest.fixture

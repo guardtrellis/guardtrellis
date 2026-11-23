@@ -5,8 +5,8 @@
 Start with the [roadmap](ROADMAP.md) and the public
 [GitHub Project](https://github.com/users/sahilmathur254/projects/3). Its **Ready to contribute**
 view contains scoped work that can start now. Issues labelled
-[good first issue](https://github.com/sahilmathur254/guardtrellis/labels/good%20first%20issue)
-have a small entry point; [help wanted](https://github.com/sahilmathur254/guardtrellis/labels/help%20wanted)
+[good first issue](https://github.com/guardtrellis/guardtrellis/labels/good%20first%20issue)
+have a small entry point; [help wanted](https://github.com/guardtrellis/guardtrellis/labels/help%20wanted)
 also includes more involved work.
 
 Read the issue's acceptance criteria, dependencies, and existing discussion before starting.
@@ -25,7 +25,7 @@ Fork the repository on GitHub, replace `YOUR_USERNAME` below with your account, 
 ```sh
 git clone https://github.com/YOUR_USERNAME/guardtrellis.git
 cd guardtrellis
-git remote add upstream https://github.com/sahilmathur254/guardtrellis.git
+git remote add upstream https://github.com/guardtrellis/guardtrellis.git
 git switch -c describe-your-change
 ```
 

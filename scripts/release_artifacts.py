@@ -68,7 +68,7 @@ def release_block(project: dict) -> str:
     return (
         f"{README_START}\n"
         f"**Version: `{version}`.** See [PyPI](https://pypi.org/project/guardtrellis/{version}/)\n"
-        "for availability and [release notes](https://github.com/sahilmathur254/guardtrellis/releases).\n"
+        "for availability and [release notes](https://github.com/guardtrellis/guardtrellis/releases).\n"
         "A source checkout may describe a candidate that has not been published yet.\n\n"
         "Install this version in an activated virtual environment:\n\n"
         "```sh\n"

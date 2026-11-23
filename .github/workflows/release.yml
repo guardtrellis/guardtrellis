@@ -48,7 +48,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          test "$GITHUB_REPOSITORY" = sahilmathur254/guardtrellis
+          test "$GITHUB_REPOSITORY" = guardtrellis/guardtrellis
           test "$GITHUB_REF" = refs/heads/main
           gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --commit "$GITHUB_SHA" \
             --event push --limit 1 --json status,conclusion,headSha |
@@ -196,7 +196,7 @@ jobs:
           REHEARSAL_RUN_ID: ${{ inputs.rehearsal_run_id }}
           REHEARSAL_ARTIFACT_ID: ${{ inputs.rehearsal_artifact_id }}
         run: |
-          test "$GITHUB_REPOSITORY" = sahilmathur254/guardtrellis
+          test "$GITHUB_REPOSITORY" = guardtrellis/guardtrellis
           test "$GITHUB_REF" = refs/heads/main
           if [[ ! "$REHEARSAL_RUN_ID" =~ ^[0-9]+$ || ! "$REHEARSAL_ARTIFACT_ID" =~ ^[0-9]+$ ]]; then
             echo "PyPI promotion requires numeric rehearsal run and candidate artifact IDs" >&2

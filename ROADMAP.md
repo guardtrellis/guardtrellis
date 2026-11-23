@@ -10,6 +10,10 @@ of current status, priority, and ownership. This document explains direction and
 exit criteria. Each linked issue contains its scope, starting files, acceptance criteria,
 and dependencies. Horizons are an order of work, not promised dates. Updated 2026-11-09.
 
+The [organization migration runbook](docs/organization_migration.md) records the scoped
+ownership transition and preservation checks. A prepared patch does not establish that
+repositories, publisher registrations or integrations have moved.
+
 The workstreams below are tracked on the Project in the agreed order. Design proposals and
 demand-led validation remain distinct from implementation-ready work; a tracking issue does
 not promise a feature, assignee, or delivery date. Project fields hold their current status.
@@ -24,7 +28,7 @@ CI validates Python 3.11–3.14 on Linux and Python 3.12 on macOS 26 ARM64 and W
 [contributor guide](CONTRIBUTING.md) for the matrix and checks.
 
 Check [PyPI](https://pypi.org/project/guardtrellis/) for current package availability and
-[GitHub releases](https://github.com/sahilmathur254/guardtrellis/releases) for publication
+[GitHub releases](https://github.com/guardtrellis/guardtrellis/releases) for publication
 and verification evidence. The policy/operations recipe, versioned policy/delivery evaluation,
 and async tool-handoff regression evidence shipped in `0.1.2`; the bounded decoded-query
 recipe shipped in `0.1.3`. The decoded-JSON recipe-first decision is accepted; publication
