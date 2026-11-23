@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/users/sahilmathur254/projects/3
     about: Check existing priorities and scoped tasks before proposing new work.
   - name: Contribution guide
-    url: https://github.com/sahilmathur254/guardtrellis/blob/main/CONTRIBUTING.md
+    url: https://github.com/guardtrellis/guardtrellis/blob/main/CONTRIBUTING.md
     about: Set up the project, choose an issue, and submit a focused pull request.

@@ -10,7 +10,7 @@ Report the exact package version or commit you tested.
 
 ## Report a vulnerability privately
 
-Use [GitHub private vulnerability reporting](https://github.com/sahilmathur254/guardtrellis/security/advisories/new).
+Use [GitHub private vulnerability reporting](https://github.com/guardtrellis/guardtrellis/security/advisories/new).
 Avoid public issues or pull requests containing an undisclosed vulnerability or exploit.
 If the private reporting form is unavailable, open an issue asking for a private contact
 without including vulnerability details.

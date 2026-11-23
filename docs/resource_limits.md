@@ -157,7 +157,7 @@ produce exit one. Parent interruption saves completed samples and returns 130.
 These results quantify limitations already described in the [API contract](api.md#limits-and-asynchronous-work).
 This measurement work does not alter detection rules or claim arbitrary schema execution
 is bounded inside the Guard process. Any failure of a documented contract needs a separate
-minimal reproduction and issue; undisclosed security defects follow [the security policy](https://github.com/sahilmathur254/guardtrellis/blob/main/SECURITY.md).
+minimal reproduction and issue; undisclosed security defects follow [the security policy](https://github.com/guardtrellis/guardtrellis/blob/main/SECURITY.md).
 
 ## Separate concurrency evidence
 

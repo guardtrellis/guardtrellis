@@ -1,7 +1,7 @@
 # GuardTrellis
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sahilmathur254/guardtrellis/main/docs/assets/guardtrellis-logo.png" alt="GuardTrellis logo: a woven shield with a green check mark" width="360">
+  <img src="https://raw.githubusercontent.com/guardtrellis/guardtrellis/main/docs/assets/guardtrellis-logo.png" alt="GuardTrellis logo: a woven shield with a green check mark" width="360">
 </p>
 
 A small Python SDK for local checks around model inputs, complete outputs, retrieved text,
@@ -10,12 +10,12 @@ and proposed tool calls. Policies are explicit, composable, and independent of m
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/guardtrellis?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/guardtrellis)
 
 The documented public API is supported across `0.1.x` under the
-[compatibility policy](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/compatibility.md).
+[compatibility policy](https://github.com/guardtrellis/guardtrellis/blob/main/docs/compatibility.md).
 Supported Python: 3.11–3.14. Apache-2.0 licensed.
 
 <!-- guardtrellis-release:start -->
 **Version: `0.2.0`.** See [PyPI](https://pypi.org/project/guardtrellis/0.2.0/)
-for availability and [release notes](https://github.com/sahilmathur254/guardtrellis/releases).
+for availability and [release notes](https://github.com/guardtrellis/guardtrellis/releases).
 A source checkout may describe a candidate that has not been published yet.
 
 Install this version in an activated virtual environment:
@@ -44,34 +44,34 @@ An explicit version opts into a prerelease when applicable. Optional integration
 - A [48-scenario evaluation batch](evaluation/detector_delivery/README.md) for
   `0.1.9`, with pre-observation expectations, default/opt-in comparisons and separate
   detector, complete-redaction and checked-delivery results. #45 tracks CI/review evidence.
-- A [policy and operations recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/policy_operations.md)
+- A [policy and operations recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/policy_operations.md)
   with distinct stage policies, checked-data handoff, metadata-only diagnostics, and host resource controls.
-- A separate [policy-combination evaluation](https://github.com/sahilmathur254/guardtrellis/blob/main/evaluation/policy_combinations/README.md)
+- A separate [policy-combination evaluation](https://github.com/guardtrellis/guardtrellis/blob/main/evaluation/policy_combinations/README.md)
   measuring ordered checks, callback/tool delivery, and privacy surfaces against explicit synthetic expectations.
-- A [retrieval and tool-call recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/retrieval_tools.md)
+- A [retrieval and tool-call recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/retrieval_tools.md)
   that carries checked text and validated arguments through both boundaries using core dependencies.
-- A [decoded-query recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/decoded_query.md)
+- A [decoded-query recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/decoded_query.md)
   that checks one decoded `search.query` field before passing freshly validated arguments to a local callback.
-- A [decoded-contact recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/decoded_contact.md)
+- A [decoded-contact recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/decoded_contact.md)
   with a fixed two-field policy, whole-call budgets, and checked authorization and delivery.
   It uses existing public APIs and leaves SDK detector coverage unchanged.
-- An explicit [formatted-phone option](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/formatted_phone.md)
+- An explicit [formatted-phone option](https://github.com/guardtrellis/guardtrellis/blob/main/docs/formatted_phone.md)
   for 8–15 ASCII digits with literal `+`, single spaces/hyphens, and one separated
   parenthesized group. Existing callers retain contiguous-phone detection.
-- An explicit [connection-URI option](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/connection_strings.md)
+- An explicit [connection-URI option](https://github.com/guardtrellis/guardtrellis/blob/main/docs/connection_strings.md)
   released in `0.1.8` for blocking supported PostgreSQL/MongoDB password-bearing
   URIs. Existing callers retain the default token-signature policy.
-- A [tool-result handoff recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/tool_result_handoff.md)
+- A [tool-result handoff recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/tool_result_handoff.md)
   that checks returned tool text before inserting it into agent state or passing it to another consumer.
-- A separate [40-case Unicode and PII development set](https://github.com/sahilmathur254/guardtrellis/blob/main/evaluation/challenges/README.md)
+- A separate [40-case Unicode and PII development set](https://github.com/guardtrellis/guardtrellis/blob/main/evaluation/challenges/README.md)
   with synthetic provenance, multilingual context, benign cases, and retained misses and false positives.
   The original 72-case smoke corpus and its historical results remain available.
 - OpenAI SDK 3 compatibility for the optional OpenAI and Azure examples, using HTTPX2.
-  See the [migration notes](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/openai.md#sdk-3-compatibility)
+  See the [migration notes](https://github.com/guardtrellis/guardtrellis/blob/main/docs/openai.md#sdk-3-compatibility)
   for custom clients and certificate trust changes.
 
 Synthetic results measure the recorded cases and do not establish broader detection accuracy.
-The [control-coverage matrix](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/coverage.md)
+The [control-coverage matrix](https://github.com/guardtrellis/guardtrellis/blob/main/docs/coverage.md)
 links configured behavior to source, regression cases, retained evidence and required host controls.
 
 ## Quickstart
@@ -109,7 +109,7 @@ boundary. Heuristic matches are signals, not probabilities or comprehensive prot
 Select `PIIScanner(formats=["phone"], phone_mode="formatted")` to redact supported
 forms such as `+1 (202) 555-0123` as one complete span. Malformed or overlong candidates
 produce no phone finding in this mode; they are not automatically blocked. The
-[formatted-phone guide](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/formatted_phone.md)
+[formatted-phone guide](https://github.com/guardtrellis/guardtrellis/blob/main/docs/formatted_phone.md)
 defines the grammar, offsets, exclusions, and decoded-query wiring. It does not validate
 country codes, number allocation, ownership, or arbitrary obfuscation.
 
@@ -117,7 +117,7 @@ Select `SecretScanner(connection_strings=True)` to block supported PostgreSQL/Mo
 password-bearing URIs, including PostgreSQL query passwords. Place it before redactors.
 It preserves complete URI finding spans, applies bounded local scanning, and makes no
 database or credential checks. Templates can block intentionally, and escaped JSON still
-needs explicit application-owned decoding. The [connection-URI guide](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/connection_strings.md)
+needs explicit application-owned decoding. The [connection-URI guide](https://github.com/guardtrellis/guardtrellis/blob/main/docs/connection_strings.md)
 defines supported syntax, exclusions, private processing limits and safe tool-result use.
 
 ```python
@@ -171,7 +171,7 @@ and application concurrency limits when execution must be forcibly bounded.
 Clone the source to run the examples or contribute:
 
 ```sh
-git clone https://github.com/sahilmathur254/guardtrellis.git
+git clone https://github.com/guardtrellis/guardtrellis.git
 cd guardtrellis
 uv sync --all-extras --group dev
 uv run python examples/plain_callable.py
@@ -195,28 +195,28 @@ uv build
 uv run python scripts/smoke_dist.py
 ```
 
-The [retrieval/tool-call recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/retrieval_tools.md)
+The [retrieval/tool-call recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/retrieval_tools.md)
 uses only core dependencies and shows checked data crossing both boundaries, rejected callbacks,
 and host authorization.
 
-The [policy and operations recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/policy_operations.md)
+The [policy and operations recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/policy_operations.md)
 extends this with stage-specific decisions, scanner ordering, callback failures, safe logging,
 and application concurrency/deadline guidance. It also uses only core dependencies.
 
-The [decoded-query recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/decoded_query.md)
+The [decoded-query recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/decoded_query.md)
 uses the existing public APIs to check a single decoded `search.query` string. It rejects
 invalid original arguments before scanning, serializes a fresh checked object, validates it
 again, and authorizes the final call before local execution. It uses only core dependencies;
 it does not recursively scan arbitrary structured data or expand detector coverage.
 
-The [decoded-contact recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/decoded_contact.md)
+The [decoded-contact recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/decoded_contact.md)
 checks only decoded `contact.email` and `contact.phone` strings. It runs secret checks across
 both fields before either reaches PII redaction, shares work/findings budgets across the call,
 and keeps decoded findings separate from final serialized validation. It is a synchronous,
 core-only application example. Its fixed policy retains contiguous-phone detection;
 adopting the formatted-phone option is an explicit application decision.
 
-The [tool-result handoff recipe](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/tool_result_handoff.md)
+The [tool-result handoff recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/tool_result_handoff.md)
 validates and authorizes a call, executes it, then checks its returned text at `Stage.RETRIEVAL`
 before the next consumer receives it. It uses core dependencies and the current public APIs.
 The host must route every raw-return path through this check; it cannot undo execution side effects.
@@ -233,36 +233,36 @@ returning it to graph state. Instrumentation around callbacks may still capture 
 
 The optional provider examples (`.[openai]`) use direct OpenAI Responses or Azure OpenAI
 Chat Completions through guarded callbacks. Their default modes and ordinary tests make
-no provider calls. See the [OpenAI guide](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/openai.md)
-and [Azure guide](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/azure_openai.md)
+no provider calls. See the [OpenAI guide](https://github.com/guardtrellis/guardtrellis/blob/main/docs/openai.md)
+and [Azure guide](https://github.com/guardtrellis/guardtrellis/blob/main/docs/azure_openai.md)
 for setup, privacy/failure boundaries, and separately approved one-request live smokes.
 The `openai` extra now requires `openai>=3,<4` and `httpx2>=2.12,<3`; custom clients
 must follow the SDK 3 migration notes above. Live verification of both paths is pending.
 
-The separate [Gemini example](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/gemini.md)
+The separate [Gemini example](https://github.com/guardtrellis/guardtrellis/blob/main/docs/gemini.md)
 uses the optional `.[gemini]` extra and also defaults to mocked HTTP. Its one-request live smoke can use an approved Gemini Free Tier
 project with the documented model and limits. A maintainer-approved live smoke passed on
 2026-09-26; the guide records the exact source, versions, token counts, and evidence limits.
 
-See [API details](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/api.md),
-[limitations and trust boundaries](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/limitations.md),
-[evaluation methodology](https://github.com/sahilmathur254/guardtrellis/blob/main/evaluation/README.md),
-[measured smoke results](https://github.com/sahilmathur254/guardtrellis/blob/main/evaluation/REPORT.md),
-[Unicode and PII challenges](https://github.com/sahilmathur254/guardtrellis/blob/main/evaluation/challenges/README.md),
-[resource measurements and host controls](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/resource_limits.md),
-and [contribution guidance](https://github.com/sahilmathur254/guardtrellis/blob/main/CONTRIBUTING.md).
+See [API details](https://github.com/guardtrellis/guardtrellis/blob/main/docs/api.md),
+[limitations and trust boundaries](https://github.com/guardtrellis/guardtrellis/blob/main/docs/limitations.md),
+[evaluation methodology](https://github.com/guardtrellis/guardtrellis/blob/main/evaluation/README.md),
+[measured smoke results](https://github.com/guardtrellis/guardtrellis/blob/main/evaluation/REPORT.md),
+[Unicode and PII challenges](https://github.com/guardtrellis/guardtrellis/blob/main/evaluation/challenges/README.md),
+[resource measurements and host controls](https://github.com/guardtrellis/guardtrellis/blob/main/docs/resource_limits.md),
+and [contribution guidance](https://github.com/guardtrellis/guardtrellis/blob/main/CONTRIBUTING.md).
 These checks do not provide comprehensive
 prompt-injection prevention, factual verification, regulatory compliance, or a tool sandbox.
 
 ## Roadmap and contributions
 
 Use the public [GitHub Project](https://github.com/users/sahilmathur254/projects/3) to find
-ready work and track progress. The [roadmap](https://github.com/sahilmathur254/guardtrellis/blob/main/ROADMAP.md) explains the release milestones,
+ready work and track progress. The [roadmap](https://github.com/guardtrellis/guardtrellis/blob/main/ROADMAP.md) explains the release milestones,
 dependencies, and longer-term proposals. Start with a
-[good first issue](https://github.com/sahilmathur254/guardtrellis/labels/good%20first%20issue)
-or a [help wanted issue](https://github.com/sahilmathur254/guardtrellis/labels/help%20wanted),
-then follow the [contributor workflow](https://github.com/sahilmathur254/guardtrellis/blob/main/CONTRIBUTING.md).
+[good first issue](https://github.com/guardtrellis/guardtrellis/labels/good%20first%20issue)
+or a [help wanted issue](https://github.com/guardtrellis/guardtrellis/labels/help%20wanted),
+then follow the [contributor workflow](https://github.com/guardtrellis/guardtrellis/blob/main/CONTRIBUTING.md).
 
-See the [changelog](https://github.com/sahilmathur254/guardtrellis/blob/main/CHANGELOG.md)
-for version-specific behavior and the [release guide](https://github.com/sahilmathur254/guardtrellis/blob/main/docs/releasing.md)
+See the [changelog](https://github.com/guardtrellis/guardtrellis/blob/main/CHANGELOG.md)
+for version-specific behavior and the [release guide](https://github.com/guardtrellis/guardtrellis/blob/main/docs/releasing.md)
 for packaging checks, TestPyPI rehearsal, and maintainer-approved publication.
