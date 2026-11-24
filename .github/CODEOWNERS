@@ -1,0 +1,11 @@
+# Default owners
+* @GhagSagar23
+
+# Scanners
+src/guardtrellis/scanners/ @GhagSagar23
+
+# CI/CD
+.github/ @GhagSagar23
+
+# Docs
+docs/ @GhagSagar23
