@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "dataset_version": "stripe-keys-v1",
+  "recipes": [
+    {
+      "id": "R01",
+      "kind": "input_chars",
+      "amount": 100000,
+      "contracts": {
+        "default": {
+          "action": "allow",
+          "error": null,
+          "primary_count": 0
+        },
+        "enabled": {
+          "action": "allow",
+          "error": null,
+          "primary_count": 0
+        }
+      }
+    },
+    {
+      "id": "R02",
+      "kind": "input_chars",
+      "amount": 100001,
+      "contracts": {
+        "default": {
+          "action": "allow",
+          "error": null,
+          "primary_count": 0
+        },
+        "enabled": {
+          "action": "error",
+          "error": "stripe_key_limit_exceeded",
+          "primary_count": 0
+        }
+      }
+    },
+    {
+      "id": "R03",
+      "kind": "candidate_chars",
+      "amount": 255,
+      "contracts": {
+        "default": {
+          "action": "allow",
+          "error": null,
+          "primary_count": 0
+        },
+        "enabled": {
+          "action": "block",
+          "error": null,
+          "primary_count": 1
+        }
+      }
+    },
+    {
+      "id": "R04",
+      "kind": "candidate_chars",
+      "amount": 256,
+      "contracts": {
+        "default": {
+          "action": "allow",
+          "error": null,
+          "primary_count": 0
+        },
+        "enabled": {
+          "action": "error",
+          "error": "stripe_key_limit_exceeded",
+          "primary_count": 0
+        }
+      }
+    },
+    {
+      "id": "R05",
+      "kind": "malformed_attempts",
+      "amount": 256,
+      "contracts": {
+        "default": {
+          "action": "allow",
+          "error": null,
+          "primary_count": 0
+        },
+        "enabled": {
+          "action": "allow",
+          "error": null,
+          "primary_count": 0
+        }
+      }
+    },
+    {
+      "id": "R06",
+      "kind": "malformed_attempts",
+      "amount": 257,
+      "contracts": {
+        "default": {
+          "action": "allow",
+          "error": null,
+          "primary_count": 0
+        },
+        "enabled": {
+          "action": "error",
+          "error": "stripe_key_limit_exceeded",
+          "primary_count": 0
+        }
+      }
+    },
+    {
+      "id": "R07",
+      "kind": "combined_findings",
+      "amount": 255,
+      "contracts": {
+        "default": {
+          "action": "block",
+          "error": null,
+          "primary_count": 0
+        },
+        "enabled": {
+          "action": "block",
+          "error": null,
+          "primary_count": 1
+        }
+      }
+    },
+    {
+      "id": "R08",
+      "kind": "combined_findings",
+      "amount": 256,
+      "contracts": {
+        "default": {
+          "action": "block",
+          "error": null,
+          "primary_count": 0
+        },
+        "enabled": {
+          "action": "error",
+          "error": "finding_limit_exceeded",
+          "primary_count": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,448 @@
+# Stripe account-key disclosure baseline, v1
+
+48 public, AI-assisted synthetic development scenarios; no independent external case review.
+576 correlated baseline observations, not 576 independent examples. SDK defaults unchanged.
+No enabled Stripe observations, live credentials, provider requests or efficacy guarantees.
+
+SDK 0.2.0; Darwin / Python 3.12.0.
+Pre-observation [freeze receipt](https://github.com/guardtrellis/guardtrellis/issues/109#issuecomment-7130408959); SHA-256 `260c7743a6a45545266989087f0faad26d5cc3d3fd555516aa61ebd262728441`.
+
+Measurement integrity: **True**; contract checks: **True**.
+
+| Profile | Observed / expected | TP / FP / TN / FN | ERROR | Desired exact | Contract failures |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| secret_block | 192/192 | 0 / 0 / 52 / 140 | 0 | 51 | 0 |
+| secret_redact | 192/192 | 0 / 0 / 52 / 140 | 0 | 51 | 0 |
+| handoff | 192/192 | 0 / 0 / 52 / 140 | 0 | 51 | 0 |
+
+Stripe primary findings alone determine TP/FP/TN/FN. Incidental legacy/PII findings are separate.
+ERROR and incomplete work are never true positives; undefined rates are null.
+Desired complete protection and exact checked delivery remain separate from current-contract conformance.
+Resource probes and harness controls are outside primary accuracy denominators.
+CPU/RSS describe whole children, not SDK performance or capacity. Local evidence is not native CI.
+
+## Retained desired mismatches
+
+- `S01` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S41` / secret_block / plain: block; desired mismatches spans; contract True.
+- `S41` / secret_block / json_literal: block; desired mismatches spans; contract True.
+- `S41` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S41` / secret_block / decoded: block; desired mismatches spans; contract True.
+- `S42` / secret_block / json_escaped: allow; desired mismatches action, text, delivery; contract True.
+- `S43` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S46` / secret_block / plain: block; desired mismatches spans; contract True.
+- `S46` / secret_block / json_literal: block; desired mismatches spans; contract True.
+- `S46` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S46` / secret_block / decoded: block; desired mismatches spans; contract True.
+- `S47` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / secret_block / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / secret_block / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / secret_block / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / secret_block / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S41` / secret_redact / plain: redact; desired mismatches spans, text, delivery; contract True.
+- `S41` / secret_redact / json_literal: redact; desired mismatches spans, text, delivery; contract True.
+- `S41` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S41` / secret_redact / decoded: redact; desired mismatches spans, text, delivery; contract True.
+- `S42` / secret_redact / json_escaped: allow; desired mismatches action, text, delivery; contract True.
+- `S43` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S46` / secret_redact / plain: redact; desired mismatches spans, text, delivery; contract True.
+- `S46` / secret_redact / json_literal: redact; desired mismatches spans, text, delivery; contract True.
+- `S46` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S46` / secret_redact / decoded: redact; desired mismatches spans, text, delivery; contract True.
+- `S47` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / secret_redact / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / secret_redact / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / secret_redact / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / secret_redact / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S01` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S02` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S03` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S04` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S05` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S06` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S07` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S08` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S09` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S10` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S11` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S12` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S13` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S14` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S15` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S16` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S17` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S18` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S19` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S20` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S21` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S22` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S23` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S24` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S37` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S38` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S39` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S40` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S41` / handoff / plain: block; desired mismatches spans; contract True.
+- `S41` / handoff / json_literal: block; desired mismatches spans; contract True.
+- `S41` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S41` / handoff / decoded: block; desired mismatches spans; contract True.
+- `S42` / handoff / json_escaped: allow; desired mismatches action, text, delivery; contract True.
+- `S43` / handoff / plain: redact; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / handoff / json_literal: redact; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S43` / handoff / decoded: redact; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S44` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S45` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S46` / handoff / plain: block; desired mismatches spans; contract True.
+- `S46` / handoff / json_literal: block; desired mismatches spans; contract True.
+- `S46` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S46` / handoff / decoded: block; desired mismatches spans; contract True.
+- `S47` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S47` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / handoff / plain: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / handoff / json_literal: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / handoff / json_escaped: allow; desired mismatches action, spans, text, delivery; contract True.
+- `S48` / handoff / decoded: allow; desired mismatches action, spans, text, delivery; contract True.
