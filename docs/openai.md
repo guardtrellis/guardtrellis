@@ -20,16 +20,17 @@ Examples are source scripts, not installed console commands.
 ## SDK 3 compatibility
 
 This source checkout requires `openai>=3,<4` and `httpx2>=2.12,<3` for the `openai`
-extra; the current lockfile selects OpenAI `3.50.0` and HTTPX2 `2.16.0`. This also
+extra; the current lockfile selects OpenAI `3.57.0` and HTTPX2 `2.16.2`. This also
 applies to the [Azure example](azure_openai.md). Re-sync the extra before running either
 source script. These locked versions do not establish compatibility across every allowed
 version. Older published GuardTrellis releases retain their own dependency requirements.
 
 The [bounded OpenAI/Azure profile work](https://github.com/sahilmathur254/guardtrellis/issues/104)
-is a child of [#49](https://github.com/sahilmathur254/guardtrellis/issues/49), tracked Now / P2 /
-In review. Its accepted scope checks the minimum pair OpenAI `3.0.0` / HTTPX2 `2.12.0`
-and the reviewed lock pair `3.50.0` / `2.16.0` for the two existing examples. The local
-candidate preserves SDK behavior and dependency requirements; native CI remains pending.
+is a child of [#49](https://github.com/sahilmathur254/guardtrellis/issues/49). Its accepted
+scope checks the minimum pair OpenAI `3.0.0` / HTTPX2 `2.12.0` and the current lock pair
+`3.57.0` / `2.16.2` for the two existing examples, preserving SDK behavior and dependency
+requirements. [PR #108](https://github.com/guardtrellis/guardtrellis/pull/108) records the
+submitted revisions and their native CI, distribution and Python/Actions CodeQL evidence.
 The broader #49 work remains Backlog because no resolver conflict has been demonstrated.
 
 When updating an application copied from the SDK 2 examples, replace its `httpx` imports,
@@ -52,7 +53,7 @@ dependency profile; their distinct HTTP mock suites must both pass.
 | Profile | OpenAI | HTTPX2 | Other runtime dependencies |
 | --- | --- | --- | --- |
 | `minimum` | `3.0.0` | `2.12.0` | Resolved for the selected Python/platform; record actual versions. |
-| `locked` | `3.50.0` | `2.16.0` | Constrained by the selected OpenAI closure exported from `uv.lock`. |
+| `locked` | `3.57.0` | `2.16.2` | Constrained by the selected OpenAI closure exported from `uv.lock`. |
 
 From a checkout with the locked build/development tooling installed:
 
@@ -83,7 +84,11 @@ for triage; it does not authorize changing dependency requirements or expected o
 ### Local profile evidence — 2026-11-17
 
 The local, uncommitted candidate based on `454d93aa6c2f6af060ca8e739eeba411a3d030a0`
-passed both source profiles on macOS ARM64, CPython `3.12.0`, with uv `0.8.17`:
+passed both source profiles on macOS ARM64, CPython `3.12.0`, with uv `0.8.17`.
+
+This dated record used OpenAI `3.0.0` / HTTPX2 `2.12.0` for the minimum profile and
+OpenAI `3.50.0` / HTTPX2 `2.16.0` for its then-locked profile. The current profile table
+above follows the updated lockfile; it does not change these historical results.
 
 | Check | Minimum | Locked |
 | --- | --- | --- |
