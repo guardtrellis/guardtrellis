@@ -20,9 +20,17 @@ Examples are source scripts, not installed console commands.
 ## SDK 3 compatibility
 
 This source checkout requires `openai>=3,<4` and `httpx2>=2.12,<3` for the `openai`
-extra; the lockfile selects OpenAI 3.19.2. This also applies to the
-[Azure example](azure_openai.md). Re-sync the extra before running either source script.
-Older published GuardTrellis releases retain their own dependency requirements.
+extra; the current lockfile selects OpenAI `3.50.0` and HTTPX2 `2.16.0`. This also
+applies to the [Azure example](azure_openai.md). Re-sync the extra before running either
+source script. These locked versions do not establish compatibility across every allowed
+version. Older published GuardTrellis releases retain their own dependency requirements.
+
+The [bounded OpenAI/Azure profile work](https://github.com/sahilmathur254/guardtrellis/issues/104)
+is a child of [#49](https://github.com/sahilmathur254/guardtrellis/issues/49), tracked Now / P2 /
+In review. Its accepted scope checks the minimum pair OpenAI `3.0.0` / HTTPX2 `2.12.0`
+and the reviewed lock pair `3.50.0` / `2.16.0` for the two existing examples. The local
+candidate preserves SDK behavior and dependency requirements; native CI remains pending.
+The broader #49 work remains Backlog because no resolver conflict has been demonstrated.
 
 When updating an application copied from the SDK 2 examples, replace its `httpx` imports,
 clients, timeouts, transports, request/response types, and mocked exceptions with `httpx2`.
@@ -32,8 +40,64 @@ still need `httpx` for another integration should keep that separate dependency.
 HTTPX2 uses the operating-system certificate trust store by default. Install the required
 system CA certificates, or supply a verified CA bundle with `SSL_CERT_FILE`; do not disable
 TLS verification. Mocked tests do not verify a deployment's certificate configuration.
-See the SDK's [HTTPX2 migration guide](https://github.com/openai/openai-python/blob/v3.19.2/httpx2.md)
+See the pinned [SDK 3.19.2 HTTPX2 migration reference](https://github.com/openai/openai-python/blob/v3.19.2/httpx2.md)
 for custom client, instrumentation, and trust-store migration details.
+
+## Isolated compatibility profiles
+
+The profile checker uses fresh environments containing only GuardTrellis and its OpenAI
+extra. Both the Responses example and the Azure Chat Completions example use the same
+dependency profile; their distinct HTTP mock suites must both pass.
+
+| Profile | OpenAI | HTTPX2 | Other runtime dependencies |
+| --- | --- | --- | --- |
+| `minimum` | `3.0.0` | `2.12.0` | Resolved for the selected Python/platform; record actual versions. |
+| `locked` | `3.50.0` | `2.16.0` | Constrained by the selected OpenAI closure exported from `uv.lock`. |
+
+From a checkout with the locked build/development tooling installed:
+
+```sh
+uv run --frozen python scripts/check_openai_profile.py --profile minimum --regressions
+uv run --frozen python scripts/check_openai_profile.py --profile locked --regressions
+uv build --offline --no-build-isolation
+uv run --frozen python scripts/smoke_dist.py --openai-only --openai-profile minimum
+uv run --frozen python scripts/smoke_dist.py --openai-only --openai-profile locked
+```
+
+Consumer-isolation checks precede the addition of locked pytest tooling, excluding unrelated
+lint/type tools that could constrain provider or core dependencies. Every initial
+runtime package/version must remain unchanged after tooling installation and regressions;
+tests use the isolated interpreter directly so project synchronization cannot replace the
+minimum pins. Empty, skipped or failing regression runs are not compatibility evidence.
+Copied source examples execute outside the checkout against the installed SDK. Runtime
+probes use synthetic configuration and prohibit socket/DNS access; package-index downloads
+during environment setup are separate from provider calls.
+
+The native CI matrix is configured to check both profiles and both distributions on
+Linux, macOS and Windows. Local validation remains distinct from a submitted revision's
+native CI and Python/Actions CodeQL evidence. These two selected profiles do not establish
+compatibility across every allowed dependency combination, live provider availability or
+a deployment's certificate configuration. An unavailable or failing minimum is retained
+for triage; it does not authorize changing dependency requirements or expected outcomes.
+
+### Local profile evidence — 2026-11-17
+
+The local, uncommitted candidate based on `454d93aa6c2f6af060ca8e739eeba411a3d030a0`
+passed both source profiles on macOS ARM64, CPython `3.12.0`, with uv `0.8.17`:
+
+| Check | Minimum | Locked |
+| --- | --- | --- |
+| Both HTTPX2 clients construct without network access and close synchronously | Passed | Passed |
+| Both copied source mock commands deliver only `Contact [PII]` | Passed | Passed |
+| Existing adapter regressions | 73 passed, zero skips | 73 passed, zero skips |
+| Initial installed packages unchanged after pytest tooling and after tests | 28 preserved | 26 preserved |
+| Dependency consistency checks before and after regressions | Passed | Passed |
+
+Each run prints the exact initial and post-tooling/test versions, source/lock/example/SDK
+hashes, base revision, dirty-worktree status and runtime identity. These hashes distinguish
+the working candidate from its base commit. The local result does not establish native
+Windows/Linux checks, other Python versions or processed Python/Actions CodeQL. Current
+review and distribution-check status are recorded in [#104](https://github.com/sahilmathur254/guardtrellis/issues/104).
 
 ## Default: no provider calls
 

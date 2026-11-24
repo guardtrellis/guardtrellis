@@ -1,0 +1,3 @@
+# Declared direct dependency floors; resolve transitive dependencies freshly.
+openai==3.0.0
+httpx2==2.12.0

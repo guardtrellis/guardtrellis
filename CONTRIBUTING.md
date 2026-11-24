@@ -41,6 +41,8 @@ uv run ruff format --check .
 uv run mypy
 uv run --frozen python scripts/check_gemini_profile.py --profile minimum --regressions
 uv run --frozen python scripts/check_gemini_profile.py --profile locked
+uv run --frozen python scripts/check_openai_profile.py --profile minimum --regressions
+uv run --frozen python scripts/check_openai_profile.py --profile locked --regressions
 uv run --frozen python scripts/check_observability_profile.py --profile disabled
 uv run --frozen python scripts/check_observability_profile.py --profile minimum --regressions
 uv run --frozen python scripts/check_observability_profile.py --profile locked --regressions
@@ -124,6 +126,24 @@ disabled profile proves execution without OpenTelemetry; minimum and locked prof
 inspect real, nonempty SDK exports and the complete metadata allowlist under blocked
 sockets. Their initial API/SDK pair is the same `1.45.2`; separate fresh environments
 do not establish coverage of every version allowed by the declared ranges.
+
+The [OpenAI/Azure compatibility profiles](docs/openai.md#isolated-compatibility-profiles)
+independently constrain the declared minimum pair (`openai==3.0.0`, `httpx2==2.12.0`) and
+the complete selected locked OpenAI closure. Both existing examples and their mock suites
+run in each profile, with a nonempty zero-skips gate and every initial runtime package
+version checked again after adding test tooling. Native Windows, macOS and Linux run
+both source profiles and minimum/locked wheel/sdist checks. Preserve the existing
+core/OpenAI-only/all-extras and Gemini smokes; an all-extras environment cannot substitute
+for provider isolation. To check only the OpenAI minimum distributions after building:
+
+```sh
+uv run --frozen python scripts/smoke_dist.py --openai-only --openai-profile minimum
+```
+
+Default distribution smokes include the locked OpenAI profile; `--openai-only` and
+`--gemini-only` are mutually exclusive. Profile setup may download dependencies, but the
+runtime probes and provider regressions make no live provider calls. Report exact tested
+versions rather than claiming compatibility across the entire declared range.
 
 The CI matrix covers these combinations:
 

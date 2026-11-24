@@ -7,6 +7,10 @@ No provider SDK is added to the GuardTrellis core. This example was introduced i
 This source checkout uses OpenAI SDK 3 and HTTPX2. Before updating a copied example or
 custom client, follow the [SDK 3 migration notes](openai.md#sdk-3-compatibility), including
 the change to system certificate trust and `httpx2` metadata reporting.
+The [isolated compatibility profiles](openai.md#isolated-compatibility-profiles) cover both
+this Chat Completions example and the separate OpenAI Responses example. They use fresh
+minimum/locked OpenAI-only environments; success with one provider mock is insufficient
+to establish the other path. No live Azure verification is added by that work.
 
 ## Run without credentials
 
