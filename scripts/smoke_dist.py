@@ -5,6 +5,7 @@ Dependencies must be cached when running with UV_OFFLINE=1.
 """
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -20,6 +21,23 @@ from gemini_profiles import (
     fresh_environment,
     profile_constraints,
     run_mocked_example,
+)
+from openai_profiles import (
+    PROFILES as OPENAI_PROFILES,
+)
+from openai_profiles import (
+    assert_openai_profile,
+    print_evidence,
+    run_mocked_examples,
+)
+from openai_profiles import (
+    build_options as openai_build_options,
+)
+from openai_profiles import (
+    fresh_environment as openai_environment,
+)
+from openai_profiles import (
+    profile_constraints as openai_constraints,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -152,7 +170,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dist-dir", type=Path, default=ROOT / "dist")
     parser.add_argument("--gemini-profile", choices=PROFILES, default="locked")
-    parser.add_argument("--gemini-only", action="store_true")
+    parser.add_argument("--openai-profile", choices=OPENAI_PROFILES, default="locked")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--gemini-only", action="store_true")
+    selection.add_argument("--openai-only", action="store_true")
     args = parser.parse_args()
     directory = args.dist_dir.resolve()
     wheels = list(directory.glob("*.whl"))
@@ -179,8 +200,11 @@ def main() -> None:
     for artifact in wheels + sdists:
         # Gemini's environment is fresh for each artifact and profile. Running it
         # earlier in the shared stages below would still leak core/OpenAI extras.
-        smoke_gemini(artifact, args.gemini_profile)
-        if args.gemini_only:
+        if not args.openai_only:
+            smoke_gemini(artifact, args.gemini_profile)
+        if not args.gemini_only:
+            smoke_openai(artifact, args.openai_profile)
+        if args.gemini_only or args.openai_only:
             continue
         with tempfile.TemporaryDirectory(prefix="guardtrellis-install-") as directory:
             work = Path(directory)
@@ -278,6 +302,48 @@ def smoke_gemini(artifact: Path, profile: str) -> None:
         assert_gemini_profile(python, work, expected)
         run_mocked_example(python, work, expected)
         print(f"Verified {artifact.name}: Gemini-only {profile}", flush=True)
+
+
+def smoke_openai(artifact: Path, profile: str) -> None:
+    """Verify both provider examples in a fresh, explicitly constrained consumer."""
+    with tempfile.TemporaryDirectory(prefix=f"guardtrellis-openai-{profile}-") as directory:
+        work = Path(directory)
+        python = openai_environment(work)
+        constraints, expected = openai_constraints(work, profile)
+        options = openai_build_options(python, work, artifact)
+        subprocess.run(
+            [
+                "uv",
+                "pip",
+                "install",
+                "--python",
+                str(python),
+                "--index-url",
+                "https://pypi.org/simple",
+                "--constraint",
+                str(constraints),
+                *options,
+                f"{artifact}[openai]",
+            ],
+            cwd=work,
+            check=True,
+            timeout=180,
+        )
+        subprocess.run(["uv", "pip", "check", "--python", str(python)], check=True, timeout=30)
+        print(
+            json.dumps(
+                {
+                    "artifact": artifact.name,
+                    "artifact_sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        print_evidence(python, work, profile, expected)
+        assert_openai_profile(python, work, expected)
+        run_mocked_examples(python, work, expected)
+        print(f"Verified {artifact.name}: OpenAI/Azure-only {profile}", flush=True)
 
 
 if __name__ == "__main__":

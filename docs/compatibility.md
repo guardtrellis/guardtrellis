@@ -6,6 +6,17 @@ that series; it does not promise compatibility across every future `0.x` minor r
 Alpha, beta, release-candidate, and development versions are outside this promise.
 Availability is recorded on [PyPI](https://pypi.org/project/guardtrellis/).
 
+## Current release and maintenance
+
+[`0.2.0`](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0) was published
+on 2026-11-09. Maintenance follows `main` and the latest published release under the
+existing [security maintenance decision](../SECURITY.md#supported-versions). Older patches
+or series have no promised parallel backport line, support lifetime or response deadline;
+continued maintenance would require a separate announcement.
+
+The `0.1.x` compatibility promise below retains its original series-specific scope.
+This status update introduces no new `0.2.x` or `1.0` API-compatibility promise.
+
 ## Public API covered by the promise
 
 Use the names exported from the top-level `guardtrellis` package:
@@ -112,25 +123,31 @@ Any wider promise for `1.0.0` will be stated explicitly when that release is pre
   beyond SDK 3/HTTPX2, require a later minor release and migration notes. A patch may raise
   a dependency minimum to obtain a correctness or security fix; the changelog must identify
   the new requirement. Python-version support and the public API promise still apply.
-- While `0.1.x` is the current final-release series, maintenance targets its latest patch
-  and `main`. Upgrade to the latest patch for fixes; backports to older patches are not
-  guaranteed. Maintenance of `0.1.x` after a newer minor series ships requires a separate
-  announcement. No response deadline, support lifetime, or availability SLA is promised.
+- Maintenance targets `main` and the latest published release, currently
+  [`0.2.0`](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0). Backports to
+  older patches or series are not guaranteed; continued older-series maintenance requires
+  a separate announcement. No response deadline, support lifetime or availability SLA is promised.
 
 Provider services, models, endpoint availability, and copied application adapters remain
 outside the core API guarantee. Shipped examples retain their stated verification scope;
 OpenAI and Azure are currently mock-verified. Report vulnerabilities through the existing
 [security reporting process](../SECURITY.md).
 
+The bounded [OpenAI/Azure profiles](openai.md#isolated-compatibility-profiles) check the
+declared direct minimum pair and the selected lock in separate consumer environments.
+Their evidence is limited to the recorded versions, platforms and mocked workflows;
+it does not extend the core API promise or cover every version allowed by an extra.
+
 ## Gemini SDK 3 transition
 
 The accepted [Google GenAI 3 migration](google_genai3_migration_design.md), implemented
 under [#96](https://github.com/sahilmathur254/guardtrellis/issues/96), merged through
-[PR #97](https://github.com/sahilmathur254/guardtrellis/pull/97) for the unpublished
-`0.2.0` candidate. Native Linux/macOS/Windows CI and Python/Actions CodeQL passed at
+[PR #97](https://github.com/sahilmathur254/guardtrellis/pull/97) and shipped in
+[`0.2.0`](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0) on 2026-11-09.
+Native Linux/macOS/Windows CI and Python/Actions CodeQL passed at
 merged commit `153f73decef033fada78ae499d181bedbd289725`; the
 [Gemini verification record](gemini.md#verification-status) links the results.
-Publication requires separate authorization.
+The release record contains the subsequent publication evidence.
 This optional dependency-major transition does not remove a documented core API or change
 scanner/orchestration behavior, defaults, Python support or non-Gemini declared requirements.
 
@@ -140,10 +157,9 @@ HTTPX2, review OS certificate trust, and adopt the example's explicit backend en
 restriction. See the [migration steps](gemini.md#sdk-3-migration-for-020). No SDK 2 branch
 or automatic HTTPX fallback is supported by that example.
 
-Until a separately authorized `0.2.0` publication, the current `0.1.x` maintenance policy
-above continues. After `0.2.0` publication, maintenance follows `main` and the latest
-published release, then in `0.2.x`, under the existing
-[security maintenance policy](../SECURITY.md#supported-versions). Existing `0.1.x` packages
+Since the `0.2.0` publication, maintenance follows `main` and the latest published release
+under the existing [security maintenance policy](../SECURITY.md#supported-versions).
+Existing `0.1.x` packages
 remain available; applications retaining SDK 2 can pin `guardtrellis[gemini]<0.2` and their
 own provider dependencies. A pin is not a promise of upstream service availability or fixes.
 There is no parallel `0.1.x` backport commitment, support lifetime or response deadline;

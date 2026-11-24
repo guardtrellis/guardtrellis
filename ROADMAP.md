@@ -8,7 +8,7 @@ contracts, failure behavior, and evidence for the formats they actually cover.
 The [public GitHub Project](https://github.com/users/sahilmathur254/projects/3) is the source
 of current status, priority, and ownership. This document explains direction and milestone
 exit criteria. Each linked issue contains its scope, starting files, acceptance criteria,
-and dependencies. Horizons are an order of work, not promised dates. Updated 2026-11-09.
+and dependencies. Horizons are an order of work, not promised dates. Updated 2026-11-17.
 
 The [organization migration runbook](docs/organization_migration.md) records the scoped
 ownership transition and preservation checks. A prepared patch does not establish that
@@ -50,7 +50,10 @@ The [`0.1.12` release](https://github.com/sahilmathur254/guardtrellis/releases/t
 includes the dependency maintenance and accepted #35 research below, preserving SDK behavior.
 The [release record](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.1.0)
 documents the completed stable `0.1.0` publication and its verification evidence.
-The [0.1.x compatibility policy](docs/compatibility.md) now applies.
+The [`0.2.0` release](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0)
+shipped the Gemini SDK 3 / HTTPX2 migration on 2026-11-09. The
+[compatibility and maintenance policy](docs/compatibility.md) retains the historical
+`0.1.x` promise and records maintenance of `main` and the latest published release.
 The [README](README.md) contains installation instructions matching this source checkout;
 merged source changes may precede publication.
 
@@ -67,9 +70,10 @@ observed integration gaps over adding scanner families or framework wrappers for
 
 | Order | Workstream | Next outcome | Tracking |
 | --- | --- | --- | --- |
-| Merged; publication pending | Gemini SDK 3 / HTTPX2 migration | Complete release closeout, then obtain publication approval and rehearse/promote the same artifacts; preserve core behavior. | [#96](https://github.com/sahilmathur254/guardtrellis/issues/96) Done through [#97](https://github.com/sahilmathur254/guardtrellis/pull/97); targets `0.2.0`; dependency-only [#95](https://github.com/sahilmathur254/guardtrellis/pull/95) closed as superseded |
+| Released in `0.2.0` | Gemini SDK 3 / HTTPX2 migration | Use the released migration guidance and verify each application's selected dependency profile; preserve core behavior. | [#96](https://github.com/sahilmathur254/guardtrellis/issues/96) completed through [#97](https://github.com/sahilmathur254/guardtrellis/pull/97) and release closeout [#98](https://github.com/sahilmathur254/guardtrellis/pull/98); [release evidence](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0); #95 closed as superseded |
 | Completed; follow-ups as needed | Tool-result handoff | Use the checked tool-result recipe before the next model call or agent-state insertion, using the existing API. | [#44](https://github.com/sahilmathur254/guardtrellis/issues/44) closed; shipped in `0.1.4` |
-| Implementation candidate; under review | Optional retrieval-check metrics | Observe scan count/outcome/time with the disabled-by-default [source recipe](docs/observability.md), preserving checked delivery and a complete static exported-metadata allowlist. | Design [#48](https://github.com/sahilmathur254/guardtrellis/issues/48) accepted; implementation [#101](https://github.com/sahilmathur254/guardtrellis/issues/101); `0.2.1` candidate, not a release commitment |
+| Merged; package publication separate | Optional retrieval-check metrics | Use the disabled-by-default [source recipe](docs/observability.md), preserving checked delivery and a complete static exported-metadata allowlist. | Design [#48](https://github.com/sahilmathur254/guardtrellis/issues/48) accepted; [#101](https://github.com/sahilmathur254/guardtrellis/issues/101) completed through [#103](https://github.com/sahilmathur254/guardtrellis/pull/103); possible `0.2.1` contribution, not a release commitment |
+| Source validation; publication separate | OpenAI/Azure dependency profiles | Use bounded minimum/locked checks for both existing examples, preserving SDK and adapter behavior. The [profile guide](docs/openai.md#isolated-compatibility-profiles) distinguishes current lock versions from dated local evidence. | [#104](https://github.com/sahilmathur254/guardtrellis/issues/104); [PR #108](https://github.com/guardtrellis/guardtrellis/pull/108) records review and native CI evidence; child of [#49](https://github.com/sahilmathur254/guardtrellis/issues/49), which remains Later, P2, Backlog because no SDK resolver conflict is demonstrated |
 | Completed; shared API deferred | Structured values | Build on the bounded decoded `search.query` recipe shipped in `0.1.3`; require a concrete caller gap before a shared checker. | Design [#11](https://github.com/sahilmathur254/guardtrellis/issues/11); implementation [#41](https://github.com/sahilmathur254/guardtrellis/issues/41) closed |
 | Completed; follow-ups as needed | Escaped JSON contact workflow | Use the fixed two-field application helper, whole-call budgets and checked delivery without changing SDK defaults. | Design [#50](https://github.com/sahilmathur254/guardtrellis/issues/50) accepted 2026-10-18; implementation [#62](https://github.com/sahilmathur254/guardtrellis/issues/62) closed; shipped in `0.1.5` |
 | Completed; follow-ups as needed | Formatted international phones | Select the bounded phone mode explicitly and compare complete checked outcomes with retained baselines. | [#60](https://github.com/sahilmathur254/guardtrellis/issues/60) closed; shipped in `0.1.6` |
@@ -83,38 +87,41 @@ observed integration gaps over adding scanner families or framework wrappers for
 | Completed bounded research | Retrieval/tool policy research | Use the [frozen twelve-scenario evaluation](evaluation/retrieval_tool_policy/README.md) and separate controls, retaining semantic limitations and host-owned enforcement. No new API or recipe is accepted. | [#35](https://github.com/sahilmathur254/guardtrellis/issues/35); Done after maintainer acceptance 2026-11-05; merged [#91](https://github.com/sahilmathur254/guardtrellis/pull/91); shipped in `0.1.12` |
 | Later | Streaming | Decide whether a bounded release model is useful and defensible for a named caller. | Existing [#12](https://github.com/sahilmathur254/guardtrellis/issues/12); exploratory |
 
-Until a separately approved `0.2.0` publication, the current `0.1.x` maintenance policy
-continues. Patch fixes follow the existing compatibility and changelog rules. New API
-surfaces need an explicit versioning decision; planned incompatible changes require
-migration guidance and a later minor release. The accepted Gemini dependency-major
-transition targets `0.2.0`; the other workstreams do not become part of that batch by
-default, and no delivery date is promised.
+Maintenance follows `main` and the latest published release under the existing
+[maintenance decision](docs/compatibility.md#current-release-and-maintenance). The historical
+`0.1.x` API promise retains its original scope; this roadmap introduces no wider `0.2.x`
+promise. New API surfaces and incompatible dependency transitions still need an explicit
+versioning decision and migration guidance. A merged contribution does not by itself
+approve a version bump or publication, and no delivery date is promised.
 
-## 0.2.1 implementation candidate: retrieval-check metrics
+## Merged: retrieval-check metrics
 
 The [accepted #48 contract](docs/observability_design.md) scopes one application-owned,
 metrics-only sibling of the checked tool-result recipe. [#101](https://github.com/sahilmathur254/guardtrellis/issues/101)
-implements the [guide and helper](docs/observability.md), optional source-checkout dependency
-profiles and exported-envelope/fault regressions. It preserves SDK APIs/defaults,
+completed through [PR #103](https://github.com/sahilmathur254/guardtrellis/pull/103), adding
+the [guide and helper](docs/observability.md), optional source-checkout dependency profiles
+and exported-envelope/fault regressions. It preserves SDK APIs/defaults,
 the original handoff policy and core dependencies; spans and a reusable adapter remain deferred.
 
-This implementation candidate is under review. The 2,128-test strict baseline, focused
-regressions, fresh disabled/minimum/locked profiles, existing evaluations, lint/types,
-builds, strict package metadata and fresh distribution smokes passed locally. Native
-Windows/macOS/Linux plus Python/Actions CodeQL are required before a later merge
-decision. The accepted design file is a preserved acceptance snapshot; the
-[guide](docs/observability.md#verification-status) records
-implementation status. This is one improvement with tests and documentation within a
-possible `0.2.1` batch, with no version bump, delivery date or release approval implied.
+The 2,128-test strict baseline and other local checks retain their dated record in the
+[guide](docs/observability.md#verification-status). At merged commit
+`c6e9b84cf377ac3f2c9596c2770909964f5ea680`, the
+[post-merge native matrix](https://github.com/sahilmathur254/guardtrellis/actions/runs/44089985507)
+passed all six jobs and [Python/Actions CodeQL](https://github.com/sahilmathur254/guardtrellis/actions/runs/44089985635)
+processed both main-branch analyses with zero findings and no errors or warnings. The
+accepted design file remains a preserved acceptance snapshot. This is one improvement
+with tests and documentation toward a possible `0.2.1` batch; its documentation/tracking
+closeout is not another feature. No version bump, delivery date or release approval is implied.
 
-## Candidate 0.2.0: Gemini SDK 3 / HTTPX2 migration
+## Released 0.2.0: Gemini SDK 3 / HTTPX2 migration
 
 The [accepted design](docs/google_genai3_migration_design.md) and
 [#96 implementation plan](https://github.com/sahilmathur254/guardtrellis/issues/96)
 were accepted on 2026-11-09 and implemented through merged
 [PR #97](https://github.com/sahilmathur254/guardtrellis/pull/97). #96 is closed and Done;
-#95's dependency-only cross-major proposal is closed as superseded. The `0.2.0` source
-candidate remains unpublished.
+#95's dependency-only cross-major proposal is closed as superseded.
+[`0.2.0`](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0) was published
+on 2026-11-09 from `6240804d4a7618fb91809db137a23d0dcd950b7d`.
 
 The bounded scope changes only the existing optional Gemini requirements, source example,
 its regressions, installed validation and migration/release guidance. It selects
@@ -140,10 +147,12 @@ is retained alongside the subsequent native evidence. The
 [SDK 3 migration guide](docs/gemini.md#sdk-3-migration-for-020) records HTTPX2 types,
 certificate trust and environment changes. The
 [support decision](docs/compatibility.md#gemini-sdk-3-transition) follows latest-release/main
-maintenance after publication without promising a parallel `0.1.x` backport line.
-Publication still requires separate authorization, green Windows/CodeQL checks on the
-final release commit, TestPyPI rehearsal and promotion of the same artifacts to PyPI.
-Any release-closeout commit needs its own CI; the merge evidence above applies to `153f73d`.
+maintenance without promising a parallel `0.1.x` backport line. The
+[TestPyPI rehearsal](https://github.com/sahilmathur254/guardtrellis/actions/runs/42630743896)
+and [same-artifact PyPI promotion](https://github.com/sahilmathur254/guardtrellis/actions/runs/42631452856)
+are linked by the release record. The earlier implementation-merge evidence above still
+applies to `153f73d`, separately from the released closeout commit and its verification.
+Future release closeouts retain their own authorization and exact-commit CI gates.
 
 ## Completed 0.1.12: maintenance and accepted retrieval/tool research
 

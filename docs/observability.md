@@ -10,9 +10,11 @@ This is an application-owned sibling of the [tool-result handoff](tool_result_ha
 using the existing public GuardTrellis APIs. It adds no installed SDK API, scanner,
 default, automatic interception or provider integration. The accepted
 [#48 contract](observability_design.md) records the design;
-[#101](https://github.com/sahilmathur254/guardtrellis/issues/101) tracks this implementation.
-It is a `0.2.1` implementation candidate under review, with no version-bump or
-publication commitment. See [verification status](#verification-status).
+[#101](https://github.com/sahilmathur254/guardtrellis/issues/101) completed through
+[PR #103](https://github.com/sahilmathur254/guardtrellis/pull/103) on 2026-11-17.
+The recipe is merged source work after the `0.2.0` release. It can contribute to a possible
+`0.2.1` batch, with no version-bump or publication commitment. See
+[verification status](#verification-status).
 
 ## Start with telemetry disabled
 
@@ -212,12 +214,12 @@ probe. Existing handoff regressions keep the original policy and checked-deliver
 in scope. See [focused regressions](../tests/test_tool_result_metrics.py) and the
 [profile checker](../scripts/check_observability_profile.py).
 
-This implementation candidate is under review. Local validation and the fresh dependency
-profiles are separate from native CI evidence. Before merging, require native
-Windows/macOS/Linux checks, Python/Actions CodeQL, required package checks and maintainer
-approval. An all-extras run or a skipped optional test does not establish the disabled
-profile, and local macOS cannot establish Windows success. Merge and publication have
-separate approval gates. SDK behavior and version remain unchanged.
+#101 is complete through merged PR #103. The local validation record and the later
+exact-merge native evidence below retain their separate source/platform scopes. An
+all-extras run or a skipped optional test does not establish the disabled profile, and
+local macOS cannot establish Windows success. Future changes need their own native CI,
+Python/Actions CodeQL and required package checks. Package publication has a separate
+approval gate; this source contribution preserves SDK behavior and version.
 
 ### Local validation — 2026-11-17
 
@@ -236,10 +238,27 @@ These local results were recorded for the #101 working tree based on
 | Lock and version agreement | `uv lock --check --offline` and release-version agreement for unchanged `0.2.0` passed. |
 | Packaging | Wheel and source archive passed strict metadata checks and fresh core-only, OpenAI-only, all-extras and Gemini-only locked installation smokes. Provider requests were mocked. |
 
-These are local results, not native Windows/Linux or hosted macOS CI evidence. Fresh
+These local results are separate from the subsequent native evidence below. Fresh
 profiles with the same initial package versions do not establish compatibility across
-the entire declared version range. Native CI, Python/Actions CodeQL and any later merge
-or publication still require their separate gates.
+the entire declared version range.
+
+### Merge and native CI evidence — 2026-11-17
+
+[PR #103](https://github.com/sahilmathur254/guardtrellis/pull/103) merged as
+`c6e9b84cf377ac3f2c9596c2770909964f5ea680`; #101 is completed. The
+[post-merge native matrix](https://github.com/sahilmathur254/guardtrellis/actions/runs/44089985507)
+passed all six jobs on that exact main revision: Linux Python 3.11–3.14 and macOS/Windows
+Python 3.12. Windows passed 2,048 tests with 80 expected platform skips; its fresh minimum
+and locked observability profiles each passed all 119 focused regressions without skips.
+The 14 existing evaluation commands and wheel/source-archive installation checks also passed.
+
+[Python and Actions CodeQL](https://github.com/sahilmathur254/guardtrellis/actions/runs/44089985635)
+completed with actual processed analyses on `refs/heads/main`, using the advanced workflow's
+analysis key and both language categories. Python record `2186205386` and Actions record
+`2186203981` reported zero findings and empty errors/warnings. This verifies the merged
+source and selected mocked/in-memory paths, not a new package publication, live-provider
+run or general guarantee for arbitrary host telemetry. Later changes require their own
+exact-commit validation and any package release requires separate approval.
 
 Trace spans, async instrumentation, a reusable adapter package, network exporters,
 payload capture, dashboards, GenAI inference labeling and accuracy/performance guarantees

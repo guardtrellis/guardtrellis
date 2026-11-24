@@ -47,6 +47,10 @@ jobs:
         run: |
           uv run --frozen python scripts/check_gemini_profile.py --profile minimum
           uv run --frozen python scripts/check_gemini_profile.py --profile locked
+      - name: Verify fresh constrained OpenAI and Azure dependency profiles
+        run: |
+          uv run --frozen python scripts/check_openai_profile.py --profile minimum --regressions
+          uv run --frozen python scripts/check_openai_profile.py --profile locked --regressions
       - name: Verify declared Gemini minima with focused regressions
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.11'
         run: uv run --frozen python scripts/check_gemini_profile.py --profile minimum --regressions
@@ -147,3 +151,5 @@ jobs:
       - name: Verify both distributions with declared Gemini minima
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.11'
         run: uv run --frozen python scripts/smoke_dist.py --gemini-only --gemini-profile minimum
+      - name: Verify both distributions with declared OpenAI minima
+        run: uv run --frozen python scripts/smoke_dist.py --openai-only --openai-profile minimum

@@ -34,11 +34,12 @@ own application.
 The accepted [migration contract](google_genai3_migration_design.md) and
 [implementation #96](https://github.com/sahilmathur254/guardtrellis/issues/96) merged through
 [PR #97](https://github.com/sahilmathur254/guardtrellis/pull/97) as
-`153f73decef033fada78ae499d181bedbd289725`, preparing the unpublished `0.2.0` candidate.
+`153f73decef033fada78ae499d181bedbd289725`. It shipped in
+[`0.2.0`](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0) on 2026-11-09.
 [Post-merge native CI](https://github.com/sahilmathur254/guardtrellis/actions/runs/42618484210)
 and [Python/Actions CodeQL](https://github.com/sahilmathur254/guardtrellis/actions/runs/42618483212)
-passed at that commit. Publication remains a separate gate; no new live-provider result
-is claimed. The earlier
+passed at that implementation commit. The release record provides the later publication
+evidence; no new live-provider result is claimed. The earlier
 [local evidence](google_genai3_migration_design.md#local-implementation-evidence-2026-11-09)
 retains its original validation scope.
 Core GuardTrellis APIs, detector rules and non-Gemini requirements stay unchanged.
@@ -70,9 +71,9 @@ becomes live because opt-in environment variables happen to exist.
 
 Applications retaining the old example can pin `guardtrellis[gemini]<0.2` and their own
 provider dependencies. That pin does not promise upstream availability or future fixes.
-Until `0.2.0` is separately published, the current `0.1.x` maintenance policy continues.
-After publication, maintenance follows `main` and the latest release in `0.2.x`; there is
-no promised parallel `0.1.x` backport line or support duration. See the
+Maintenance now follows `main` and the latest published release under the existing
+maintenance decision; there is no promised parallel `0.1.x` backport line or support
+duration. See the
 [compatibility and support decision](compatibility.md#gemini-sdk-3-transition).
 
 ## One approved live request
