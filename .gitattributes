@@ -20,3 +20,9 @@
 /evaluation/retrieval_tool_policy/*.md text eol=lf
 /evaluation/retrieval_tool_policy/baseline_0.1.11/*.json text eol=lf
 /evaluation/retrieval_tool_policy/baseline_0.1.11/*.md text eol=lf
+/evaluation/stripe_keys/*.json text eol=lf
+/evaluation/stripe_keys/*.jsonl text eol=lf
+/evaluation/stripe_keys/*.py text eol=lf
+/evaluation/stripe_keys/*.md text eol=lf
+/evaluation/stripe_keys/baseline_sdk_0.2.0/*.json text eol=lf
+/evaluation/stripe_keys/baseline_sdk_0.2.0/*.md text eol=lf

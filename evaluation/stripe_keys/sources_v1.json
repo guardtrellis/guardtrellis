@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "dataset_version": "stripe-keys-v1",
+  "reviewed_date": "2026-11-24",
+  "sources": [
+    {
+      "id": "stripe-key-guide",
+      "url": "https://docs.stripe.com/keys",
+      "basis": "Secret/restricted/publishable distinction and documented test/live prefixes; not complete suffix issuance bounds."
+    },
+    {
+      "id": "gitleaks-pinned-heuristic",
+      "url": "https://github.com/gitleaks/gitleaks/blob/c11adc91ad701db3e2c8df030f747086ebca8847/cmd/generate/config/rules/stripe.go",
+      "basis": "Selected detector heuristic uses ASCII suffix lengths 10-99. No source code, example credentials, entropy exemption or additional prefixes adopted."
+    },
+    {
+      "id": "trufflehog-pinned-heuristic",
+      "url": "https://github.com/trufflesecurity/trufflehog/blob/0fa069c12f0c7baf431041cd1e564a9c5058846c/pkg/detectors/stripe/stripe.go",
+      "basis": "Selected live-key detector heuristic uses ASCII suffix lengths 20-247 and excludes test keys. No source code, example credentials or live verification adopted."
+    }
+  ],
+  "selection": "The accepted 10-247 ASCII suffix policy and exact delimiter/budget choices are GuardTrellis design decisions, not a universal Stripe issuance grammar.",
+  "authorship": "Original fabricated Codex-assisted public development cases with source-aware author self-review and separate assistant review; no external independent or held-out case review."
+}
