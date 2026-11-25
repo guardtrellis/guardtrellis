@@ -1,0 +1,10 @@
+{
+  "dataset_version": "stripe-keys-v1",
+  "files": {
+    "COMPARISON_v1.md": "647c2b268114d32c169b48be89c0e4e2f44efc07afde2c4dabf876bab2d777e5",
+    "comparison_inventory_v1.json": "79c85e3a54b5866147fa4a00b138b300e4d90b46af9f7b79e3bab391735e8d5f"
+  },
+  "original_freeze_sha256": "260c7743a6a45545266989087f0faad26d5cc3d3fd555516aa61ebd262728441",
+  "phase": "before_first_enabled_comparison_observation",
+  "schema_version": 1
+}

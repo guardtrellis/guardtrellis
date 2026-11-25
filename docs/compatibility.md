@@ -69,6 +69,14 @@ intentional placeholder false positives, and raw-versus-decoded JSON boundaries 
 adoption. See the [connection-URI guide](connection_strings.md) and
 [0.1.8 release record](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.1.8).
 
+The unreleased source checkout adds `SecretScanner(stripe_keys=False)` as another explicit
+opt-in. Published 0.2.0 does not accept the option. Disabled calls preserve the existing
+token/URI behavior and do not acquire Stripe-specific work limits. Enabling it selects the
+bounded [Stripe account-key contract](stripe_keys.md), supported token actions and static
+finding/error codes. Existing CLI policies and examples stay unchanged; callers must
+explicitly adopt the new policy and test their own expected data, false positives and
+unsupported forms. This does not extend the historical `0.1.x` compatibility promise.
+
 Detection results are not frozen. A correction to a supported pattern, a false-positive
 fix, or a privacy/security fix can change findings, redacted spans, or whether a particular
 input is accepted. A privacy/security correction can reject input that an earlier patch

@@ -1,4 +1,4 @@
-"""Frozen Stripe disclosure-shape baseline; no Stripe SDK option or detector implementation."""
+"""Frozen Stripe baseline and explicitly selected, bounded opt-in comparison."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ import logging
 import math
 import os
 import platform
+import re
 import shutil
 import signal
 import subprocess
@@ -38,6 +39,11 @@ CELLS = tuple((profile, chunk) for profile in contract.PROFILES for chunk in ran
 WALL_SECONDS = 10
 TOTAL_SECONDS = 180
 MAX_REPORT_BYTES = 2 * 1024 * 1024
+COMPARISON_SHA256 = "3820efce4fd7d8705b5b18609686a01e9488383fb654aadedffb15c5c5069d61"
+COMPARISON_RECEIPT = (
+    "https://github.com/guardtrellis/guardtrellis/issues/110#issuecomment-7159776116"
+)
+COMPARISON_FILES = ("COMPARISON_v1.md", "comparison_inventory_v1.json")
 ACTIONS = {"allow", "warn", "redact", "block", "error"}
 PRIMARY_CODES = {
     "secret_stripe_secret_test",
@@ -130,7 +136,7 @@ def sdk_fingerprint():
     )
 
 
-def execution_fingerprint():
+def execution_fingerprint(*, compare=False):
     _, sdk_files, _ = sdk_fingerprint()
     files = [
         HERE,
@@ -141,6 +147,8 @@ def execution_fingerprint():
         ROOT / "pyproject.toml",
     ]
     files.extend(HERE.parent / name for name in assets.FROZEN_FILES)
+    if compare:
+        files.extend(HERE.parent / name for name in (*COMPARISON_FILES, "comparison_v1.json"))
     identity = {
         "sdk": sdk_files,
         "sources": {
@@ -303,11 +311,235 @@ def guard_for(profile):
     return Guard(retrieval_scanners=scanners, max_chars=contract.MAX_INPUT_CHARS)
 
 
+def worker_context(compare, detector_mode, kind, cell):
+    if detector_mode not in contract.MODES or (not compare and detector_mode != "default"):
+        raise ValueError("Invalid detector mode")
+    if not compare:
+        return {}
+    if (
+        kind not in ("main", "resource", "control")
+        or type(cell) is not int
+        or not 0 <= cell < {"main": len(CELLS), "resource": 8, "control": 4}[kind]
+        or kind == "control"
+        and detector_mode != "default"
+    ):
+        raise ValueError("Invalid comparison worker context")
+    return {"detector_mode": detector_mode, "worker_kind": kind, "worker_cell": cell}
+
+
+def context_matches(event, context):
+    return all(event.get(key) == value for key, value in context.items()) and (
+        not context or type(event.get("worker_cell")) is int
+    )
+
+
+def secret_for_mode(detector_mode, *, action=None):
+    from guardtrellis import Action, SecretScanner
+
+    selected = Action.BLOCK if action is None else action
+    if detector_mode == "default":
+        return SecretScanner(action=selected)
+    if detector_mode == "enabled":
+        return SecretScanner(action=selected, stripe_keys=True)
+    raise ValueError("Unknown detector mode")
+
+
+def guard_for_mode(profile, detector_mode):
+    if detector_mode == "default":
+        return guard_for(profile)
+    from guardtrellis import Action, Guard, PIIScanner
+
+    if detector_mode != "enabled" or profile not in contract.PROFILES:
+        raise ValueError("Unknown fixed comparison policy")
+    scanners = [
+        secret_for_mode(
+            detector_mode, action=Action.REDACT if profile == "secret_redact" else Action.BLOCK
+        )
+    ]
+    if profile == "handoff":
+        scanners.append(PIIScanner())
+    return Guard(retrieval_scanners=scanners, max_chars=contract.MAX_INPUT_CHARS)
+
+
+def git_identity():
+    def read(*args):
+        result = subprocess.run(
+            ["git", *args],
+            cwd=ROOT,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    try:
+        head = read("rev-parse", "HEAD")
+        base = read("merge-base", "HEAD", "refs/remotes/origin/main")
+        dirty = read("status", "--porcelain", "--untracked-files=normal")
+        return {
+            "implementation_head_commit": head
+            if head and re.fullmatch(r"[0-9a-f]{40}", head)
+            else None,
+            "implementation_base_commit": base
+            if base and re.fullmatch(r"[0-9a-f]{40}", base)
+            else None,
+            "implementation_worktree_dirty": None if dirty is None else bool(dirty),
+        }
+    except (OSError, subprocess.SubprocessError):
+        return {
+            "implementation_head_commit": None,
+            "implementation_base_commit": None,
+            "implementation_worktree_dirty": None,
+        }
+
+
+def comparison_schedule(resources, controls):
+    return [
+        (kind, cell, detector_mode)
+        for kind, count in (
+            ("main", len(CELLS)),
+            ("resource", len(resources)),
+            ("control", len(controls)),
+        )
+        for detector_mode in (contract.MODES if kind != "control" else ("default",))
+        for cell in range(count)
+    ]
+
+
+def comparison_inventory(cases, resources, controls):
+    return {
+        "schema_version": 1,
+        "dataset_version": contract.VERSION,
+        "original_freeze_sha256": assets.FREEZE_SHA256,
+        "counts": {"main": 1152, "resource": 32, "control": 4, "children": 44},
+        "bounds": {
+            "child_wall_seconds": WALL_SECONDS,
+            "parent_seconds_per_pass": TOTAL_SECONDS,
+            "capture_bytes_per_stream": limits.MAX_CAPTURE_BYTES,
+            "combined_report_bytes": MAX_REPORT_BYTES,
+            "cleanup_seconds": 5,
+        },
+        "worker_identity_fields": [
+            "event",
+            "sdk_version",
+            "sdk_sha256",
+            "runtime_sha256",
+            "detector_mode",
+            "worker_kind",
+            "worker_cell",
+        ],
+        "worker_complete_fields": [
+            "event",
+            "count",
+            "limits",
+            "resources",
+            "sdk_version",
+            "sdk_sha256",
+            "runtime_sha256",
+            "detector_mode",
+            "worker_kind",
+            "worker_cell",
+        ],
+        "row_fields": {
+            "main": sorted(ROW_FIELDS),
+            "resource": sorted(DENSE_FIELDS),
+            "control": sorted(CONTROL_FIELDS),
+            "cleanup": sorted(CLEANUP_FIELDS),
+        },
+        "main_parent_fields": [
+            "family",
+            "group",
+            "label",
+            "profile",
+            "contract_scope",
+            "detector_mode",
+            "expected_error",
+        ],
+        "resource_parent_fields": ["detector_mode"],
+        "main_workers": [
+            {
+                "detector_mode": mode,
+                "cell": cell,
+                "profile": profile,
+                "case_ids": [case["id"] for case in cases[chunk * 12 : (chunk + 1) * 12]],
+                "representations": list(contract.REPRESENTATIONS),
+                "rows": 48,
+            }
+            for mode in contract.MODES
+            for cell, (profile, chunk) in enumerate(CELLS)
+        ],
+        "resource_workers": [
+            {
+                "detector_mode": mode,
+                "cell": cell,
+                "id": recipe["id"],
+                "interfaces": ["direct", "guard"],
+                "rows": 2,
+            }
+            for mode in contract.MODES
+            for cell, recipe in enumerate(resources)
+        ],
+        "control_workers": [
+            {
+                "detector_mode": "default",
+                "cell": cell,
+                "id": case["id"],
+                "kind": case["kind"],
+                "rows": 1,
+            }
+            for cell, case in enumerate(controls)
+        ],
+    }
+
+
+def load_comparison_record(cases, resources, controls):
+    try:
+        if not re.fullmatch(r"[0-9a-f]{64}", COMPARISON_SHA256) or not re.fullmatch(
+            r"https://github\.com/guardtrellis/guardtrellis/issues/110#issuecomment-[0-9]+",
+            COMPARISON_RECEIPT,
+        ):
+            raise ValueError
+        raw = assets.read_bounded(HERE.with_name("comparison_v1.json"))
+        if assets.digest(raw) != COMPARISON_SHA256:
+            raise ValueError
+        record = contract.strict_json(raw)
+        if (
+            type(record) is not dict
+            or record.keys()
+            != {"schema_version", "dataset_version", "phase", "original_freeze_sha256", "files"}
+            or type(record["schema_version"]) is not int
+            or record["schema_version"] != 1
+            or record["dataset_version"] != contract.VERSION
+            or record["phase"] != "before_first_enabled_comparison_observation"
+            or record["original_freeze_sha256"] != assets.FREEZE_SHA256
+            or type(record["files"]) is not dict
+            or record["files"].keys() != set(COMPARISON_FILES)
+        ):
+            raise ValueError
+        for name, digest in record["files"].items():
+            if (
+                not re.fullmatch(r"[0-9a-f]{64}", digest)
+                or assets.digest(assets.read_bounded(HERE.with_name(name))) != digest
+            ):
+                raise ValueError
+        actual = contract.strict_json(
+            assets.read_bounded(HERE.with_name("comparison_inventory_v1.json"))
+        )
+        if actual != comparison_inventory(cases, resources, controls):
+            raise ValueError
+        return record
+    except (OSError, ValueError, TypeError, KeyError, UnicodeError):
+        raise ValueError("Comparison protocol or receipt is invalid") from None
+
+
 def emit(event):
     print(json.dumps(event, ensure_ascii=True, separators=(",", ":")), flush=True)
 
 
-def complete(count, applied):
+def complete(count, applied, *, compare=False, detector_mode="default", kind=None, cell=None):
     sdk_version, _, sdk_sha = sdk_fingerprint()
     emit(
         {
@@ -317,43 +549,47 @@ def complete(count, applied):
             "resources": limits.resource_usage(),
             "sdk_version": sdk_version,
             "sdk_sha256": sdk_sha,
-            "runtime_sha256": execution_fingerprint(),
+            "runtime_sha256": execution_fingerprint(compare=compare),
+            **worker_context(compare, detector_mode, kind, cell),
         }
     )
 
 
-def worker(kind, cell):
+def worker(kind, cell, *, compare=False, detector_mode="default"):
     cases, expectations, resources, controls, _ = assets.load_frozen()
+    if compare:
+        load_comparison_record(cases, resources, controls)
     sdk_version, _, sdk_sha = sdk_fingerprint()
     emit(
         {
             "event": "identity",
             "sdk_version": sdk_version,
             "sdk_sha256": sdk_sha,
-            "runtime_sha256": execution_fingerprint(),
+            "runtime_sha256": execution_fingerprint(compare=compare),
+            **worker_context(compare, detector_mode, kind, cell),
         }
     )
     applied = limits.apply_limits(2, 512)
     if kind == "main":
         profile, _ = CELLS[cell]
-        scan = guard_for(profile).scan
+        scan = guard_for_mode(profile, detector_mode).scan
         for case, representation in cell_cases(cases, cell):
-            expected = expectations[case["id"], profile, representation, "default"]
+            expected = expectations[case["id"], profile, representation, detector_mode]
             row = observe(case, expected, scan)
             emit({"event": "row", "row": validate_row(row, case, expected)})
-        complete(48, applied)
+        complete(48, applied, compare=compare, detector_mode=detector_mode, kind=kind, cell=cell)
     elif kind == "resource":
         case = resources[cell]
         for mode in ("direct", "guard"):
-            emit({"event": "row", "row": observe_resource(case, mode)})
-        complete(2, applied)
+            emit({"event": "row", "row": observe_resource(case, mode, detector_mode)})
+        complete(2, applied, compare=compare, detector_mode=detector_mode, kind=kind, cell=cell)
     elif kind == "control":
         if controls[cell]["kind"] == "supervised_cleanup":
             emit({"event": "cleanup_ready"})
             time.sleep(controls[cell]["expected"]["sleep_seconds"])
             return
         emit({"event": "row", "row": observe_control(controls[cell])})
-        complete(1, applied)
+        complete(1, applied, compare=compare, detector_mode=detector_mode, kind=kind, cell=cell)
     else:
         raise ValueError("Unknown worker kind")
 
@@ -432,14 +668,14 @@ def validate_row(row, case, expected):
     return row
 
 
-def observe_resource(case, mode):
-    from guardtrellis import Action, Guard, Rejected, SecretScanner, Stage
+def observe_resource(case, mode, detector_mode="default"):
+    from guardtrellis import Action, Guard, Rejected, Stage
 
     if mode not in ("direct", "guard"):
         raise ValueError("Invalid resource interface")
     text = contract.resource_text(case)
-    target = contract.resource_expectation(case, mode)
-    scanner = SecretScanner()
+    target = contract.resource_expectation(case, mode, detector_mode)
+    scanner = secret_for_mode(detector_mode)
     guard = Guard(input_scanners=[scanner], max_chars=200_000)
     started = time.perf_counter()
     result = scanner.scan(text, stage=Stage.INPUT) if mode == "direct" else guard.scan(text)
@@ -490,11 +726,11 @@ def observe_resource(case, mode):
         "privacy_ok": bool(safe),
         "operation_ms": elapsed,
     }
-    return validate_resource(row, case, mode)
+    return validate_resource(row, case, mode, detector_mode)
 
 
-def validate_resource(row, case, mode):
-    target = contract.resource_expectation(case, mode)
+def validate_resource(row, case, mode, detector_mode="default"):
+    target = contract.resource_expectation(case, mode, detector_mode)
     if (
         type(row) is not dict
         or row.keys() != DENSE_FIELDS
@@ -654,12 +890,28 @@ def finite(value):
     return type(value) in (int, float) and math.isfinite(value) and value >= 0
 
 
-def validate_end(event, count, sdk_version, sdk_sha, runtime_sha=None):
-    runtime_sha = runtime_sha or execution_fingerprint()
+def validate_end(
+    event,
+    count,
+    sdk_version,
+    sdk_sha,
+    runtime_sha=None,
+    *,
+    compare=False,
+    detector_mode="default",
+    kind=None,
+    cell=None,
+):
+    runtime_sha = runtime_sha or execution_fingerprint(compare=compare)
+    context = worker_context(compare, detector_mode, kind, cell)
     if (
         type(event) is not dict
         or event.keys()
-        != {"event", "count", "limits", "resources", "sdk_version", "sdk_sha256", "runtime_sha256"}
+        != (
+            {"event", "count", "limits", "resources", "sdk_version", "sdk_sha256", "runtime_sha256"}
+            | context.keys()
+        )
+        or not context_matches(event, context)
         or type(event["count"]) is not int
         or event["count"] != count
         or event["sdk_version"] != sdk_version
@@ -694,13 +946,16 @@ def read_protocol(
     resources=None,
     controls=None,
     runtime_sha=None,
+    compare=False,
+    detector_mode="default",
 ):
     rows, end = [], None
     valid = len(raw) <= limits.MAX_CAPTURE_BYTES
     identity_seen = False
     cleanup_ready_seen = False
     cleanup = kind == "control" and controls[cell]["kind"] == "supervised_cleanup"
-    runtime_sha = runtime_sha or execution_fingerprint()
+    runtime_sha = runtime_sha or execution_fingerprint(compare=compare)
+    context = worker_context(compare, detector_mode, kind, cell)
     count = expected_count(kind)
     try:
         for line in raw.splitlines(keepends=True):
@@ -711,7 +966,9 @@ def read_protocol(
                 raise ValueError
             if event.get("event") == "identity" and not identity_seen and not rows:
                 if (
-                    event.keys() != {"event", "sdk_version", "sdk_sha256", "runtime_sha256"}
+                    event.keys()
+                    != ({"event", "sdk_version", "sdk_sha256", "runtime_sha256"} | context.keys())
+                    or not context_matches(event, context)
                     or event["sdk_version"] != sdk_version
                     or event["sdk_sha256"] != sdk_sha
                     or event["runtime_sha256"] != runtime_sha
@@ -728,7 +985,7 @@ def read_protocol(
                 if kind == "main":
                     case, representation = cell_cases(cases, cell)[len(rows)]
                     profile, _ = CELLS[cell]
-                    expected = expectations[case["id"], profile, representation, "default"]
+                    expected = expectations[case["id"], profile, representation, detector_mode]
                     observed = validate_row(event["row"], case, expected)
                     rows.append(
                         {
@@ -738,12 +995,23 @@ def read_protocol(
                             "label": case["label"],
                             "profile": profile,
                             "contract_scope": expected["contract"]["scope"],
+                            **(
+                                {
+                                    "detector_mode": detector_mode,
+                                    "expected_error": expected["contract"]["action"] == "error",
+                                }
+                                if compare
+                                else {}
+                            ),
                         }
                     )
                 elif kind == "resource":
                     rows.append(
                         validate_resource(
-                            event["row"], resources[cell], ("direct", "guard")[len(rows)]
+                            event["row"],
+                            resources[cell],
+                            ("direct", "guard")[len(rows)],
+                            detector_mode,
                         )
                     )
                 else:
@@ -753,10 +1021,21 @@ def read_protocol(
                     event.get("sdk_version") != sdk_version
                     or event.get("sdk_sha256") != sdk_sha
                     or event.get("runtime_sha256") != runtime_sha
+                    or not context_matches(event, context)
                 ):
                     rows.clear()
                     raise ValueError
-                validate_end(event, count, sdk_version, sdk_sha, runtime_sha)
+                validate_end(
+                    event,
+                    count,
+                    sdk_version,
+                    sdk_sha,
+                    runtime_sha,
+                    compare=compare,
+                    detector_mode=detector_mode,
+                    kind=kind,
+                    cell=cell,
+                )
                 end = event
             else:
                 raise ValueError
@@ -768,19 +1047,25 @@ def read_protocol(
             end,
             valid and identity_seen and cleanup_ready_seen and not rows and end is None,
         )
+    if compare and kind == "resource":
+        rows = [{**row, "detector_mode": detector_mode} for row in rows]
     return rows, end, valid and end is not None
 
 
-def child_command(kind, cell):
+def child_command(kind, cell, *, compare=False, detector_mode="default"):
     executable, environment = sys.executable, limits.child_environment()
     if sys.platform == "win32":
         executable = sys._base_executable
         environment["__PYVENV_LAUNCHER__"] = sys.executable
-    return [executable, str(HERE), "--worker", kind, "--cell", str(cell)], environment
+    command = [executable, str(HERE), "--worker", kind, "--cell", str(cell)]
+    if compare:
+        command.extend(["--compare", "--detector-mode", detector_mode])
+    return command, environment
 
 
-def pending_run(kind, cell):
+def pending_run(kind, cell, *, compare=False, detector_mode="default"):
     return {
+        **({"detector_mode": detector_mode} if compare else {}),
         "kind": kind,
         "cell": cell,
         "expected_observations": expected_count(kind),
@@ -807,12 +1092,14 @@ def measure(
     resources=None,
     controls=None,
     runtime_sha=None,
+    compare=False,
+    detector_mode="default",
 ):
-    row = pending_run(kind, cell)
+    row = pending_run(kind, cell, compare=compare, detector_mode=detector_mode)
     if time.perf_counter() >= deadline:
         return row
-    command, environment = child_command(kind, cell)
-    runtime_sha = runtime_sha or execution_fingerprint()
+    command, environment = child_command(kind, cell, compare=compare, detector_mode=detector_mode)
+    runtime_sha = runtime_sha or execution_fingerprint(compare=compare)
     cleanup = kind == "control" and controls[cell]["kind"] == "supervised_cleanup"
     cleanup_armed = False
     interrupted, handlers, process = False, {}, None
@@ -874,6 +1161,8 @@ def measure(
                                 resources=resources,
                                 controls=controls,
                                 runtime_sha=runtime_sha,
+                                compare=compare,
+                                detector_mode=detector_mode,
                             )
                             if ready:
                                 cleanup_armed = True
@@ -912,6 +1201,8 @@ def measure(
                     resources=resources,
                     controls=controls,
                     runtime_sha=runtime_sha,
+                    compare=compare,
+                    detector_mode=detector_mode,
                 )
                 row["rows"] = rows
                 if end is not None:
@@ -966,7 +1257,7 @@ def ratio(a, b):
     return a / b if b else None
 
 
-def summarize(rows, inventory):
+def summarize(rows, inventory, *, compare=False):
     counts = Counter()
     for row in rows:
         if row["action"] == "error":
@@ -976,7 +1267,7 @@ def summarize(rows, inventory):
             counts[
                 ("tp" if predicted else "fn") if positive else ("fp" if predicted else "tn")
             ] += 1
-    return {
+    summary = {
         "base_scenarios": len({row["id"] for row in inventory}),
         "expected_observations": len(inventory),
         "observations": len(rows),
@@ -1007,8 +1298,22 @@ def summarize(rows, inventory):
         "privacy_failures": sum(not row["privacy_ok"] for row in rows),
     }
 
+    if compare:
+        summary.update(
+            expected_error_observations=sum(row["expected_error"] for row in inventory),
+            expected_errors=sum(
+                row["action"] == "error" and row["expected_error"] and row["contract_match"]
+                for row in rows
+            ),
+            unexpected_errors=sum(
+                row["action"] == "error" and not (row["expected_error"] and row["contract_match"])
+                for row in rows
+            ),
+        )
+    return summary
 
-def inventory(cases, expectations):
+
+def inventory(cases, expectations, *, compare=False):
     return [
         {
             "id": case["id"],
@@ -1017,17 +1322,30 @@ def inventory(cases, expectations):
             "label": case["label"],
             "profile": profile,
             "representation": representation,
-            "scope": expectations[case["id"], profile, representation, "default"]["contract"][
+            **(
+                {
+                    "detector_mode": detector_mode,
+                    "expected_error": expectations[
+                        case["id"], profile, representation, detector_mode
+                    ]["contract"]["action"]
+                    == "error",
+                }
+                if compare
+                else {}
+            ),
+            "scope": expectations[case["id"], profile, representation, detector_mode]["contract"][
                 "scope"
             ],
         }
+        for detector_mode in (contract.MODES if compare else ("default",))
         for case in cases
         for profile in contract.PROFILES
         for representation in contract.REPRESENTATIONS
     ]
 
 
-def metadata(freeze):
+def metadata(freeze, *, compare=False):
+    implementation = git_identity() if compare else {}
     sdk_version, sdk_files, sdk_sha = sdk_fingerprint()
     files = [
         HERE,
@@ -1038,7 +1356,22 @@ def metadata(freeze):
         ROOT / "uv.lock",
         ROOT / "pyproject.toml",
     ]
+    if compare:
+        files.extend(HERE.parent / name for name in (*COMPARISON_FILES, "comparison_v1.json"))
     return {
+        **(
+            {
+                "frozen_source_base_commit": freeze["source_base_commit"],
+                **implementation,
+                "comparison_sha256": COMPARISON_SHA256,
+                "comparison_receipt": COMPARISON_RECEIPT,
+                "release_status": (
+                    "unreleased source implementation; version field is not publication evidence"
+                ),
+            }
+            if compare
+            else {}
+        ),
         "created_utc": datetime.now(UTC).isoformat(),
         "sdk_version": sdk_version,
         "python": platform.python_version(),
@@ -1047,13 +1380,20 @@ def metadata(freeze):
         "os_release": platform.release(),
         "machine": platform.machine(),
         "logical_cpu_count": os.cpu_count(),
-        "source_base_commit": freeze["source_base_commit"],
-        "worktree_evidence": "source hashes identify local edits; base commit excludes this patch",
+        "source_base_commit": implementation.get("implementation_base_commit")
+        if compare
+        else freeze["source_base_commit"],
+        "worktree_evidence": (
+            "Parent Git snapshot; actual SDK/source hashes identify executed bytes, "
+            "including any uncommitted changes."
+            if compare
+            else "source hashes identify local edits; base commit excludes this patch"
+        ),
         "freeze_sha256": assets.FREEZE_SHA256,
         "freeze_receipt": assets.RECEIPT,
         "sdk_sha256": sdk_files,
         "worker_sdk_fingerprint": sdk_sha,
-        "worker_runtime_fingerprint": execution_fingerprint(),
+        "worker_runtime_fingerprint": execution_fingerprint(compare=compare),
         "dependencies": {
             name: version(name)
             for name in (
@@ -1079,17 +1419,30 @@ def metadata(freeze):
 
 
 def build_report(
-    cases, expectations, freeze, runs, interrupted, provenance, *, resources=None, controls=None
+    cases,
+    expectations,
+    freeze,
+    runs,
+    interrupted,
+    provenance,
+    *,
+    resources=None,
+    controls=None,
+    compare=False,
 ):
     resources, controls = resources or [], controls or []
     rows = [row for run in runs if run["kind"] == "main" for row in run["rows"]]
     resource_rows = [row for run in runs if run["kind"] == "resource" for row in run["rows"]]
     control_rows = [row for run in runs if run["kind"] == "control" for row in run["rows"]]
-    planned = inventory(cases, expectations)
-    summary = summarize(rows, planned)
+    planned = inventory(cases, expectations, compare=compare)
+
+    def score(observed, expected):
+        return summarize(observed, expected, compare=compare)
+
+    summary = score(rows, planned)
     measurement_ok = (
         not interrupted
-        and len(runs) == len(CELLS) + len(resources) + len(controls)
+        and len(runs) == (len(CELLS) + len(resources)) * (2 if compare else 1) + len(controls)
         and all(
             run["status"] == "completed"
             and run["child_reaped"]
@@ -1097,10 +1450,14 @@ def build_report(
             for run in runs
         )
     )
+    if compare:
+        measurement_ok &= [
+            (r["kind"], r["cell"], r.get("detector_mode")) for r in runs
+        ] == comparison_schedule(resources, controls)
     measurement_ok &= not any(
         summary[key]
         for key in (
-            "errors",
+            "unexpected_errors" if compare else "errors",
             "incomplete_observations",
             "delivery_integrity_failures",
             "privacy_failures",
@@ -1116,7 +1473,8 @@ def build_report(
         "metadata": provenance,
         "configuration": {
             "stage": "retrieval",
-            "mode": "default_only_baseline",
+            "mode": "default_enabled_comparison" if compare else "default_only_baseline",
+            **({"detector_modes": list(contract.MODES)} if compare else {}),
             "profiles": list(contract.PROFILES),
             "representations": list(contract.REPRESENTATIONS),
             "child_wall_seconds": WALL_SECONDS,
@@ -1124,7 +1482,8 @@ def build_report(
             "cleanup_allowance_seconds": 5,
             "max_capture_bytes": limits.MAX_CAPTURE_BYTES,
             "max_input_chars": contract.MAX_INPUT_CHARS,
-            "expected_children": len(CELLS) + len(resources) + len(controls),
+            "expected_children": (len(CELLS) + len(resources)) * (2 if compare else 1)
+            + len(controls),
         },
         "interrupted": interrupted,
         "measurement_checks_passed": bool(measurement_ok),
@@ -1133,9 +1492,9 @@ def build_report(
         ),
         "summary": summary,
         "resource_summary": {
-            "expected_observations": len(resources) * 2,
+            "expected_observations": len(resources) * (4 if compare else 2),
             "observations": len(resource_rows),
-            "incomplete_observations": len(resources) * 2 - len(resource_rows),
+            "incomplete_observations": len(resources) * (4 if compare else 2) - len(resource_rows),
             "contract_failures": sum(not row["contract_match"] for row in resource_rows),
         },
         "control_summary": {
@@ -1162,35 +1521,72 @@ def build_report(
         ("group", ("length", "benign", "mixed")),
     ):
         report[f"by_{dimension}"] = {
-            value: summarize(
+            value: score(
                 [row for row in rows if row[dimension] == value],
                 [row for row in planned if row[dimension] == value],
             )
             for value in values
         }
-    report["by_family_profile_representation"] = {
-        f"{family}/{profile}/{representation}": summarize(
+    dimensions = (
+        ("family", "profile", "representation", "detector_mode")
+        if compare
+        else ("family", "profile", "representation")
+    )
+    groups = {
+        (row["family"], row["profile"], row["representation"], row.get("detector_mode", "default"))
+        for row in planned
+    }
+    report["by_" + "_".join(dimensions)] = {
+        "/".join(group if compare else group[:3]): score(
             [
                 row
                 for row in rows
-                if (row["family"], row["profile"], row["representation"])
-                == (family, profile, representation)
+                if (
+                    row["family"],
+                    row["profile"],
+                    row["representation"],
+                    row.get("detector_mode", "default"),
+                )
+                == group
             ],
             [
                 row
                 for row in planned
-                if (row["family"], row["profile"], row["representation"])
-                == (family, profile, representation)
+                if (
+                    row["family"],
+                    row["profile"],
+                    row["representation"],
+                    row.get("detector_mode", "default"),
+                )
+                == group
             ],
         )
-        for family in sorted({case["family"] for case in cases})
-        for profile in contract.PROFILES
-        for representation in contract.REPRESENTATIONS
+        for group in sorted(groups)
     }
+    if compare:
+        report["by_detector_mode"] = {
+            mode: score(
+                [r for r in rows if r["detector_mode"] == mode],
+                [r for r in planned if r["detector_mode"] == mode],
+            )
+            for mode in contract.MODES
+        }
+        report["resource_by_detector_mode"] = {
+            mode: {
+                "expected_observations": len(resources) * 2,
+                "observations": sum(r["detector_mode"] == mode for r in resource_rows),
+                "contract_failures": sum(
+                    r["detector_mode"] == mode and not r["contract_match"] for r in resource_rows
+                ),
+            }
+            for mode in contract.MODES
+        }
     return report
 
 
 def render(report):
+    if report["configuration"]["mode"] == "default_enabled_comparison":
+        return render_comparison(report)
     lines = [
         "# Stripe account-key disclosure baseline, v1",
         "",
@@ -1243,6 +1639,59 @@ def render(report):
     return "\n".join(lines) + "\n"
 
 
+def render_comparison(report):
+    lines = [
+        "# Stripe account-key opt-in comparison, v1",
+        "",
+        "Unreleased source; version field alone is not publication evidence.",
+        "48 public AI-assisted development scenarios, 1,152 correlated main observations.",
+        "32 separate resource observations and four controls; no live provider requests.",
+        "No independent external case review or general accuracy/capacity claim.",
+        "",
+        f"Original [freeze receipt]({assets.RECEIPT}); "
+        f"comparison [protocol receipt]({COMPARISON_RECEIPT}).",
+        f"SDK field {report['metadata']['sdk_version']}; "
+        f"{report['metadata']['system']} / Python {report['metadata']['python']}.",
+        f"Measurement integrity: **{report['measurement_checks_passed']}**; "
+        f"contract checks: **{report['contract_checks_passed']}**.",
+        "",
+        "| Mode | Observed / expected | TP / FP / TN / FN | "
+        "Expected / unexpected ERROR | Desired exact | Contract failures |",
+        "| --- | ---: | --- | --- | ---: | ---: |",
+    ]
+    for mode, row in report["by_detector_mode"].items():
+        lines.append(
+            f"| {mode} | {row['observations']}/{row['expected_observations']} | "
+            f"{row['tp']} / {row['fp']} / {row['tn']} / {row['fn']} | "
+            f"{row['expected_errors']} / {row['unexpected_errors']} | "
+            f"{row['desired_exact']} | {row['contract_failures']} |"
+        )
+    lines += [
+        "",
+        "ERROR never enters TP/FP/TN/FN. Expected limit ERROR is processing "
+        "conformance, not detection or desired protection.",
+        "Positive/negative/error/incomplete denominators and per-family/profile/"
+        "representation/mode counts remain in JSON; undefined rates are null.",
+        "Incidental legacy/PII protection is separate from Stripe signals. Desired "
+        "full-span redaction/delivery is separate from signal detection.",
+        "Retain benign-context false positives, unsupported/raw-escaped misses and "
+        "partial redactions. CPU/RSS cover whole workers; no hard SDK deadline or "
+        "production-capacity claim.",
+        "",
+        "## Retained desired mismatches",
+        "",
+    ]
+    for row in report["rows"]:
+        failed = [key for key, value in row["comparisons"].items() if not value]
+        if failed or not row["contract_match"] or row["action"] == "error":
+            lines.append(
+                f"- `{row['id']}` / {row['detector_mode']} / {row['profile']} / "
+                f"{row['representation']}: {row['action']}; desired mismatches "
+                f"{', '.join(failed) or 'none'}; contract {row['contract_match']}."
+            )
+    return "\n".join(lines) + "\n"
+
+
 class Parser(argparse.ArgumentParser):
     def error(self, message):
         self.exit(2, "Invalid evaluation arguments.\n")
@@ -1260,6 +1709,8 @@ def write_report(report, directory):
 def main(argv=None):
     parser = Parser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--report-dir", type=Path)
+    parser.add_argument("--compare", action="store_true")
+    parser.add_argument("--detector-mode", choices=contract.MODES, help=argparse.SUPPRESS)
     parser.add_argument("--worker", choices=("main", "resource", "control"), help=argparse.SUPPRESS)
     parser.add_argument("--cell", type=int, help=argparse.SUPPRESS)
     try:
@@ -1271,7 +1722,12 @@ def main(argv=None):
         if args.report_dir is not None or args.cell is None or args.cell < 0:
             parser.error("Invalid worker arguments")
         try:
-            worker(args.worker, args.cell)
+            if args.detector_mode is not None and not args.compare:
+                parser.error("Comparison mode required")
+            selected = args.detector_mode or "default"
+            if args.worker == "control" and selected != "default":
+                parser.error("Controls run once in default mode")
+            worker(args.worker, args.cell, compare=args.compare, detector_mode=selected)
             return 0
         except KeyboardInterrupt:
             emit({"event": "error", "code": "interrupted"})
@@ -1279,11 +1735,18 @@ def main(argv=None):
         except Exception:
             emit({"event": "error", "code": "worker_error"})
             return 1
-    if args.cell is not None or args.report_dir is None or args.report_dir.exists():
+    if (
+        args.cell is not None
+        or args.detector_mode is not None
+        or args.report_dir is None
+        or args.report_dir.exists()
+    ):
         parser.error("A new report directory is required")
     try:
         cases, expectations, resources, controls, freeze = assets.load_frozen()
-        provenance = metadata(freeze)
+        if args.compare:
+            load_comparison_record(cases, resources, controls)
+        provenance = metadata(freeze, compare=args.compare)
     except KeyboardInterrupt:
         print("Evaluation interrupted.", file=sys.stderr)
         return 130
@@ -1304,24 +1767,30 @@ def main(argv=None):
             ("control", len(controls)),
         ):
             deadline = time.perf_counter() + TOTAL_SECONDS
-            for cell in range(count):
-                if interrupted[0]:
-                    result = pending_run(kind, cell)
-                else:
-                    result = measure(
-                        cell,
-                        cases,
-                        expectations,
-                        deadline,
-                        provenance["sdk_version"],
-                        provenance["worker_sdk_fingerprint"],
-                        kind=kind,
-                        resources=resources,
-                        controls=controls,
-                        runtime_sha=provenance["worker_runtime_fingerprint"],
-                    )
-                runs.append(result)
-                interrupted[0] |= result["status"] == "interrupted"
+            detector_modes = contract.MODES if args.compare and kind != "control" else ("default",)
+            for detector_mode in detector_modes:
+                for cell in range(count):
+                    if interrupted[0]:
+                        result = pending_run(
+                            kind, cell, compare=args.compare, detector_mode=detector_mode
+                        )
+                    else:
+                        result = measure(
+                            cell,
+                            cases,
+                            expectations,
+                            deadline,
+                            provenance["sdk_version"],
+                            provenance["worker_sdk_fingerprint"],
+                            kind=kind,
+                            resources=resources,
+                            controls=controls,
+                            runtime_sha=provenance["worker_runtime_fingerprint"],
+                            compare=args.compare,
+                            detector_mode=detector_mode,
+                        )
+                    runs.append(result)
+                    interrupted[0] |= result["status"] == "interrupted"
         report = build_report(
             cases,
             expectations,
@@ -1331,6 +1800,7 @@ def main(argv=None):
             provenance,
             resources=resources,
             controls=controls,
+            compare=args.compare,
         )
         args.report_dir.mkdir(parents=True)
         write_report(report, args.report_dir)
