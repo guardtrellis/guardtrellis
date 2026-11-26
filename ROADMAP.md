@@ -5,10 +5,10 @@ inputs, complete outputs, retrieved text, and proposed tool calls. Keep the core
 typed, composable, and independent of provider SDKs. Improvements should come with clear
 contracts, failure behavior, and evidence for the formats they actually cover.
 
-The [public GitHub Project](https://github.com/users/sahilmathur254/projects/3) is the source
+The [public GitHub Project](https://github.com/orgs/guardtrellis/projects/1) is the source
 of current status, priority, and ownership. This document explains direction and milestone
 exit criteria. Each linked issue contains its scope, starting files, acceptance criteria,
-and dependencies. Horizons are an order of work, not promised dates. Updated 2026-11-17.
+and dependencies. Horizons are an order of work, not promised dates. Updated 2026-11-26.
 
 The [organization migration runbook](docs/organization_migration.md) records the scoped
 ownership transition and preservation checks. A prepared patch does not establish that
@@ -72,8 +72,9 @@ observed integration gaps over adding scanner families or framework wrappers for
 | --- | --- | --- | --- |
 | Released in `0.2.0` | Gemini SDK 3 / HTTPX2 migration | Use the released migration guidance and verify each application's selected dependency profile; preserve core behavior. | [#96](https://github.com/sahilmathur254/guardtrellis/issues/96) completed through [#97](https://github.com/sahilmathur254/guardtrellis/pull/97) and release closeout [#98](https://github.com/sahilmathur254/guardtrellis/pull/98); [release evidence](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0); #95 closed as superseded |
 | Completed; follow-ups as needed | Tool-result handoff | Use the checked tool-result recipe before the next model call or agent-state insertion, using the existing API. | [#44](https://github.com/sahilmathur254/guardtrellis/issues/44) closed; shipped in `0.1.4` |
-| Merged; package publication separate | Optional retrieval-check metrics | Use the disabled-by-default [source recipe](docs/observability.md), preserving checked delivery and a complete static exported-metadata allowlist. | Design [#48](https://github.com/sahilmathur254/guardtrellis/issues/48) accepted; [#101](https://github.com/sahilmathur254/guardtrellis/issues/101) completed through [#103](https://github.com/sahilmathur254/guardtrellis/pull/103); possible `0.2.1` contribution, not a release commitment |
-| Source validation; publication separate | OpenAI/Azure dependency profiles | Use bounded minimum/locked checks for both existing examples, preserving SDK and adapter behavior. The [profile guide](docs/openai.md#isolated-compatibility-profiles) distinguishes current lock versions from dated local evidence. | [#104](https://github.com/sahilmathur254/guardtrellis/issues/104); [PR #108](https://github.com/guardtrellis/guardtrellis/pull/108) records review and native CI evidence; child of [#49](https://github.com/sahilmathur254/guardtrellis/issues/49), which remains Later, P2, Backlog because no SDK resolver conflict is demonstrated |
+| Included in the `0.2.1` source batch | Optional retrieval-check metrics | Use the disabled-by-default [source recipe](docs/observability.md), preserving checked delivery and a complete static exported-metadata allowlist. | Design [#48](https://github.com/guardtrellis/guardtrellis/issues/48) accepted; [#101](https://github.com/guardtrellis/guardtrellis/issues/101) completed through [#103](https://github.com/guardtrellis/guardtrellis/pull/103); publication is tracked separately |
+| Included in the `0.2.1` source batch | OpenAI/Azure dependency profiles | Use bounded minimum/locked checks for both existing examples, preserving SDK and adapter behavior. The [profile guide](docs/openai.md#isolated-compatibility-profiles) distinguishes current lock versions from dated local evidence. | [#104](https://github.com/guardtrellis/guardtrellis/issues/104) completed through [PR #108](https://github.com/guardtrellis/guardtrellis/pull/108); child of [#49](https://github.com/guardtrellis/guardtrellis/issues/49), which remains Later, P2, Backlog because no SDK resolver conflict is demonstrated |
+| Implementation merged; `0.2.1` preparation | Opt-in Stripe account-key shapes | Select secret/restricted test/live shapes with bounded work, checked delivery and default/enabled evidence. Existing defaults remain unchanged. | [#109](https://github.com/guardtrellis/guardtrellis/issues/109) design/baseline completed through [#111](https://github.com/guardtrellis/guardtrellis/pull/111); [#110](https://github.com/guardtrellis/guardtrellis/issues/110) implemented through [#113](https://github.com/guardtrellis/guardtrellis/pull/113); see the [guide](docs/stripe_keys.md) and [accepted plan](docs/stripe_keys_implementation_plan.md). Evaluation and implementation count as one improvement |
 | Completed; shared API deferred | Structured values | Build on the bounded decoded `search.query` recipe shipped in `0.1.3`; require a concrete caller gap before a shared checker. | Design [#11](https://github.com/sahilmathur254/guardtrellis/issues/11); implementation [#41](https://github.com/sahilmathur254/guardtrellis/issues/41) closed |
 | Completed; follow-ups as needed | Escaped JSON contact workflow | Use the fixed two-field application helper, whole-call budgets and checked delivery without changing SDK defaults. | Design [#50](https://github.com/sahilmathur254/guardtrellis/issues/50) accepted 2026-10-18; implementation [#62](https://github.com/sahilmathur254/guardtrellis/issues/62) closed; shipped in `0.1.5` |
 | Completed; follow-ups as needed | Formatted international phones | Select the bounded phone mode explicitly and compare complete checked outcomes with retained baselines. | [#60](https://github.com/sahilmathur254/guardtrellis/issues/60) closed; shipped in `0.1.6` |
@@ -94,6 +95,23 @@ promise. New API surfaces and incompatible dependency transitions still need an 
 versioning decision and migration guidance. A merged contribution does not by itself
 approve a version bump or publication, and no delivery date is promised.
 
+## 0.2.1 source batch and release preparation
+
+Three scoped improvements are included: the optional retrieval-check metrics recipe
+(#101), isolated OpenAI/Azure compatibility profiles (#104), and opt-in Stripe account-key
+detection with its frozen comparison (#109/#110). The implementation merged through
+[PR #113](https://github.com/guardtrellis/guardtrellis/pull/113) at
+`9087fdb97dce3ae60b527e5dbbca11848cecb622`. Version preparation updates the canonical
+changelog, generated installation pins, lock metadata and current documentation without
+changing scanner behavior or dependency requirements.
+
+Check [PyPI](https://pypi.org/project/guardtrellis/0.2.1/) and the
+[release record](https://github.com/guardtrellis/guardtrellis/releases/tag/v0.2.1) for
+availability and exact publication evidence. Review and exact-main native CI/CodeQL,
+organization publishing identity, a fresh TestPyPI rehearsal and same-artifact PyPI
+promotion remain separate release gates. Historical evaluation files keep their original
+versions and hashes; no additional feature or general accuracy claim is implied.
+
 ## Merged: retrieval-check metrics
 
 The [accepted #48 contract](docs/observability_design.md) scopes one application-owned,
@@ -110,8 +128,8 @@ The 2,128-test strict baseline and other local checks retain their dated record 
 passed all six jobs and [Python/Actions CodeQL](https://github.com/sahilmathur254/guardtrellis/actions/runs/44089985635)
 processed both main-branch analyses with zero findings and no errors or warnings. The
 accepted design file remains a preserved acceptance snapshot. This is one improvement
-with tests and documentation toward a possible `0.2.1` batch; its documentation/tracking
-closeout is not another feature. No version bump, delivery date or release approval is implied.
+with tests and documentation in the `0.2.1` source batch; its documentation/tracking
+closeout is not another feature. Package availability and release evidence remain separate.
 
 ## Released 0.2.0: Gemini SDK 3 / HTTPX2 migration
 

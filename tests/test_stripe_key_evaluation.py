@@ -118,7 +118,12 @@ def test_frozen_loader_uses_no_sdk_or_shadow_detector():
     ]
     assert not any(name and name.startswith("guardtrellis") for name in imports)
     runner = ast.parse(Path(run.__file__).read_text())
-    for node in ast.walk(runner):
+    baseline = next(
+        node
+        for node in runner.body
+        if isinstance(node, ast.FunctionDef) and node.name == "guard_for"
+    )
+    for node in ast.walk(baseline):
         if isinstance(node, ast.Call) and (
             isinstance(node.func, ast.Name)
             and node.func.id == "SecretScanner"

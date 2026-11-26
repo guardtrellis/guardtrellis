@@ -76,6 +76,26 @@ candidate, and 256 candidate attempts independently of findings. The existing co
 budgets. Overflow produces static, spanless `connection_string_limit_exceeded`; unexpected
 scanner failures produce `scanner_error`. Guard withholds checked output on ERROR.
 
+## Stripe account-key mode (0.2.1)
+
+The `0.2.1` source adds keyword-only `stripe_keys=False` to `SecretScanner`; SDK `0.2.0`
+does not accept this argument. Check [package availability](https://pypi.org/project/guardtrellis/)
+before using it in an installed package. Select `stripe_keys=True` explicitly to recognize
+the four selected secret/restricted test/live account-key shapes; disabled defaults,
+CLI profiles and dependency requirements are unchanged.
+
+The flag requires an actual boolean. Token-only use retains BLOCK by default and explicit
+WARN/REDACT. Combining with `connection_strings=True` remains BLOCK-only. Findings cover
+the complete selected candidate in the scanner's current input revision. Publishable keys
+add no Stripe finding and never exempt independent findings.
+
+Enabled direct/Guard calls enforce 100,000 input characters, 255 candidate characters
+including prefix and 256 eligible attempts (including malformed candidates). Stripe
+overflow yields atomic, spanless `stripe_key_limit_exceeded`; the existing combined
+256-individual-finding cap remains `finding_limit_exceeded`. Complete URI preflight
+retains precedence over Stripe preflight, followed by existing aggregation. No checked
+text is delivered on ERROR. See the [exact grammar, limits and exclusions](stripe_keys.md).
+
 ## Custom scanners
 
 ```python
@@ -120,8 +140,8 @@ already produced its complete output before that output's size is checked. There
 of 256 findings/edits per scanner. Literal configuration permits 1–128 strings of 1–1024
 characters each. Limit failures yield ERROR, without usable output. Use Guard rather than
 calling scanners directly to get the shared text-size and scanner-failure protections.
-The opted-in connection-URI mode additionally enforces its own direct-call budgets and
-static errors as described above; other scanner defaults are unchanged.
+Opted-in connection-URI and Stripe modes additionally enforce their own
+direct-call budgets and static errors as described above; scanner defaults are unchanged.
 
 Async waits default to 5 seconds **per scanner or callback**, so a multi-step run can take
 longer. Sync work runs in the event loop's thread executor with a copy of the caller's

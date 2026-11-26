@@ -52,6 +52,17 @@ the callback or data captured by provider instrumentation. There is no streaming
   differences in raw JSON. The opt-in enforces private input,
   candidate-length and candidate-count limits even on direct scanner calls or when
   `Guard.max_chars` is larger. Budget overflow is an ERROR with no checked output.
+- Stripe account keys (0.2.1 source): explicit [`stripe_keys=True`](stripe_keys.md)
+  selects only secret/restricted test/live shapes with 10–247 ASCII alphanumeric suffixes
+  and exact ASCII delimiters. SDK `0.2.0` does not accept the option; check
+  [PyPI](https://pypi.org/project/guardtrellis/) for availability. Publishable prefixes add
+  no Stripe finding; well-shaped documentation/placeholders can still be false positives.
+  Malformed shapes within the work budget produce no Stripe finding. Unsupported masked,
+  split, Unicode, encoded, webhook/organization/prod and other-vendor forms can be missed or
+  only partly redacted. No credential validity, implicit JSON decoding or normalization.
+  Enabled input/candidate/attempt budgets can cause ERROR even with a larger Guard limit;
+  ERROR withholds checked output and is not a successful detection. Existing earlier
+  scanner findings/revision traces can remain. Rejection cannot undo earlier side effects.
 - Invisible characters: Unicode categories Cc/Cf, excluding tab, CR, and LF. Default
   WARN permits content. Joiners, non-joiners, and bidirectional controls can serve
   legitimate languages or emoji. REDACT removes them and can damage meaning or display.
