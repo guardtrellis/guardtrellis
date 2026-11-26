@@ -23,6 +23,7 @@ Check one explicit UTF-8 source using local SDK scanners. No network or file rew
   --stage input|output|retrieval|tool       Required text-scanning stage
   --policy secrets|privacy                Block secrets; privacy also redacts PII
   --connection-strings                    Opt in to supported credential URIs
+  --stripe-keys                           Opt in to supported Stripe account keys
   --phone-mode contiguous|formatted        Privacy only; default contiguous
   --format text|json                      Metadata format; default text
   --output metadata|checked-text           Default metadata; checked text requires a pipe/file
@@ -51,6 +52,7 @@ class _Config:
     stage: Stage
     policy: str
     connection_strings: bool
+    stripe_keys: bool
     phone_mode: str | None
     format: str
     output: str
@@ -63,7 +65,7 @@ def _parse(argv: Sequence[str]) -> _Config | bytes:
         return f"guardtrellis {__version__}\n".encode("ascii")
     if not argv or argv[0] != "check":
         raise _Failure("invalid_command")
-    flags = {"--stdin", "--connection-strings"}
+    flags = {"--stdin", "--connection-strings", "--stripe-keys"}
     valued = {"--file", "--stage", "--policy", "--phone-mode", "--format", "--output"}
     options: dict[str, str | bool] = {}
     index = 1
@@ -105,6 +107,7 @@ def _parse(argv: Sequence[str]) -> _Config | bytes:
         Stage(str(options["--stage"])),
         policy,
         "--connection-strings" in options,
+        "--stripe-keys" in options,
         str(options.get("--phone-mode", "contiguous")) if policy == "privacy" else None,
         str(options.get("--format", "text")),
         str(options.get("--output", "metadata")),
@@ -220,7 +223,11 @@ def _read(config: _Config) -> str:
 
 
 def _scan(config: _Config, text: str) -> Result:
-    secret = SecretScanner(action=Action.BLOCK, connection_strings=config.connection_strings)
+    secret = SecretScanner(
+        action=Action.BLOCK,
+        connection_strings=config.connection_strings,
+        stripe_keys=config.stripe_keys,
+    )
     scanners: list[SecretScanner | PIIScanner] = [secret]
     if config.policy == "privacy":
         scanners.append(
@@ -240,16 +247,20 @@ def _scan(config: _Config, text: str) -> Result:
 
 
 def _report(config: _Config, result: Result | None, error: str | None) -> bytes:
+    marker = " stripe_keys=true" if config.stripe_keys else ""
     if config.format == "json":
+        options: dict[str, bool | str | None] = {
+            "connection_strings": config.connection_strings,
+            "phone_mode": config.phone_mode,
+        }
+        if config.stripe_keys:
+            options["stripe_keys"] = True
         body = {
-            "report_version": 1,
+            "report_version": 2 if config.stripe_keys else 1,
             "sdk_version": __version__,
             "stage": config.stage.value,
             "policy": config.policy,
-            "options": {
-                "connection_strings": config.connection_strings,
-                "phone_mode": config.phone_mode,
-            },
+            "options": options,
             "result": result.diagnostics() if result is not None else None,
             "error": {"code": error} if error is not None else None,
         }
@@ -258,10 +269,10 @@ def _report(config: _Config, result: Result | None, error: str | None) -> bytes:
         codes = ",".join(item.code for item in result.findings)
         report = (
             f"stage={config.stage.value} action={result.action.value} "
-            f"findings={len(result.findings)} codes={codes}\n"
+            f"findings={len(result.findings)} codes={codes}{marker}\n"
         ).encode()
     else:
-        report = f"stage={config.stage.value} error={error}\n".encode("ascii")
+        report = f"stage={config.stage.value} error={error}{marker}\n".encode("ascii")
     if len(report) > MAX_REPORT_BYTES:
         raise _Failure("report_limit_exceeded", 3)
     return report

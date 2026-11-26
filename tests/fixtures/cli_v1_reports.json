@@ -1,0 +1,316 @@
+{
+  "source_commit": "e45c759c977677085f071484195a2c6f21e1bfd9",
+  "sdk_version": "0.2.1",
+  "capture": "Independent execution of git-show original _cli.py; expected bytes are fixed records, not current formatter output.",
+  "cases": [
+    {
+      "name": "json-empty",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "json",
+        "--output",
+        "metadata"
+      ],
+      "input": "",
+      "status": 0,
+      "stdout": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"retrieval\",\"policy\":\"privacy\",\"options\":{\"connection_strings\":false,\"phone_mode\":\"contiguous\"},\"result\":{\"action\":\"allow\",\"stage\":\"retrieval\",\"findings\":[],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0},{\"scanner\":\"pii\",\"scanner_index\":1,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0}]},\"error\":null}\n",
+      "stderr": ""
+    },
+    {
+      "name": "json-allow",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "json",
+        "--output",
+        "metadata"
+      ],
+      "input": "Opening hours: 9am to 5pm.",
+      "status": 0,
+      "stdout": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"retrieval\",\"policy\":\"privacy\",\"options\":{\"connection_strings\":false,\"phone_mode\":\"contiguous\"},\"result\":{\"action\":\"allow\",\"stage\":\"retrieval\",\"findings\":[],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0},{\"scanner\":\"pii\",\"scanner_index\":1,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0}]},\"error\":null}\n",
+      "stderr": ""
+    },
+    {
+      "name": "json-redact",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "json",
+        "--output",
+        "checked-text"
+      ],
+      "input": "Contact demo@example.org",
+      "status": 0,
+      "stdout": "Contact [PII]",
+      "stderr": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"retrieval\",\"policy\":\"privacy\",\"options\":{\"connection_strings\":false,\"phone_mode\":\"contiguous\"},\"result\":{\"action\":\"redact\",\"stage\":\"retrieval\",\"findings\":[{\"code\":\"pii_email\",\"start\":8,\"end\":24,\"scanner\":\"pii\",\"scanner_index\":1,\"revision\":0}],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0},{\"scanner\":\"pii\",\"scanner_index\":1,\"action\":\"redact\",\"revision_before\":0,\"revision_after\":1}]},\"error\":null}\n"
+    },
+    {
+      "name": "json-block",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "json",
+        "--output",
+        "checked-text"
+      ],
+      "input": "Contact demo@example.org ghp_CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+      "status": 1,
+      "stdout": "",
+      "stderr": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"retrieval\",\"policy\":\"privacy\",\"options\":{\"connection_strings\":false,\"phone_mode\":\"contiguous\"},\"result\":{\"action\":\"block\",\"stage\":\"retrieval\",\"findings\":[{\"code\":\"secret_github_classic\",\"start\":25,\"end\":65,\"scanner\":\"secrets\",\"scanner_index\":0,\"revision\":0}],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"block\",\"revision_before\":0,\"revision_after\":0}]},\"error\":null}\n"
+    },
+    {
+      "name": "json-uri",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "tool",
+        "--policy",
+        "secrets",
+        "--format",
+        "json",
+        "--output",
+        "checked-text",
+        "--connection-strings"
+      ],
+      "input": "postgresql://app:SyntheticFixture42@db.example.invalid/demo",
+      "status": 1,
+      "stdout": "",
+      "stderr": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"tool\",\"policy\":\"secrets\",\"options\":{\"connection_strings\":true,\"phone_mode\":null},\"result\":{\"action\":\"block\",\"stage\":\"tool\",\"findings\":[{\"code\":\"secret_postgresql_uri\",\"start\":0,\"end\":59,\"scanner\":\"secrets\",\"scanner_index\":0,\"revision\":0}],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"block\",\"revision_before\":0,\"revision_after\":0}]},\"error\":null}\n"
+    },
+    {
+      "name": "json-phone",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "output",
+        "--policy",
+        "privacy",
+        "--format",
+        "json",
+        "--output",
+        "checked-text",
+        "--phone-mode",
+        "formatted"
+      ],
+      "input": "Contact +1 (202) 555-0123",
+      "status": 0,
+      "stdout": "Contact [PII]",
+      "stderr": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"output\",\"policy\":\"privacy\",\"options\":{\"connection_strings\":false,\"phone_mode\":\"formatted\"},\"result\":{\"action\":\"redact\",\"stage\":\"output\",\"findings\":[{\"code\":\"pii_phone\",\"start\":8,\"end\":25,\"scanner\":\"pii\",\"scanner_index\":1,\"revision\":0}],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0},{\"scanner\":\"pii\",\"scanner_index\":1,\"action\":\"redact\",\"revision_before\":0,\"revision_after\":1}]},\"error\":null}\n"
+    },
+    {
+      "name": "json-options",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "input",
+        "--policy",
+        "privacy",
+        "--format",
+        "json",
+        "--output",
+        "metadata",
+        "--connection-strings",
+        "--phone-mode",
+        "formatted"
+      ],
+      "input": "Opening hours: 9am to 5pm.",
+      "status": 0,
+      "stdout": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"input\",\"policy\":\"privacy\",\"options\":{\"connection_strings\":true,\"phone_mode\":\"formatted\"},\"result\":{\"action\":\"allow\",\"stage\":\"input\",\"findings\":[],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0},{\"scanner\":\"pii\",\"scanner_index\":1,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0}]},\"error\":null}\n",
+      "stderr": ""
+    },
+    {
+      "name": "json-literal-bytes",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "secrets",
+        "--format",
+        "json",
+        "--output",
+        "checked-text"
+      ],
+      "input": "\ufeffPublic \ud83e\udeb4\r\nNUL:\u0000",
+      "status": 0,
+      "stdout": "\ufeffPublic \ud83e\udeb4\r\nNUL:\u0000",
+      "stderr": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"retrieval\",\"policy\":\"secrets\",\"options\":{\"connection_strings\":false,\"phone_mode\":null},\"result\":{\"action\":\"allow\",\"stage\":\"retrieval\",\"findings\":[],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0}]},\"error\":null}\n"
+    },
+    {
+      "name": "json-stripe-unselected",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "secrets",
+        "--format",
+        "json",
+        "--output",
+        "checked-text"
+      ],
+      "status": 0,
+      "stderr": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"retrieval\",\"policy\":\"secrets\",\"options\":{\"connection_strings\":false,\"phone_mode\":null},\"result\":{\"action\":\"allow\",\"stage\":\"retrieval\",\"findings\":[],\"trace\":[{\"scanner\":\"secrets\",\"scanner_index\":0,\"action\":\"allow\",\"revision_before\":0,\"revision_after\":0}]},\"error\":null}\n",
+      "input_hex": "736b5f746573745f515151515151515151515151515151515151515151515151",
+      "stdout_hex": "736b5f746573745f515151515151515151515151515151515151515151515151"
+    },
+    {
+      "name": "json-invalid-encoding",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "json",
+        "--output",
+        "checked-text"
+      ],
+      "input_hex": "ff",
+      "status": 2,
+      "stdout": "",
+      "stderr": "{\"report_version\":1,\"sdk_version\":\"0.2.1\",\"stage\":\"retrieval\",\"policy\":\"privacy\",\"options\":{\"connection_strings\":false,\"phone_mode\":\"contiguous\"},\"result\":null,\"error\":{\"code\":\"invalid_encoding\"}}\n"
+    },
+    {
+      "name": "text-allow",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "text",
+        "--output",
+        "metadata"
+      ],
+      "input": "Public opening hours",
+      "status": 0,
+      "stdout": "stage=retrieval action=allow findings=0 codes=\n",
+      "stderr": ""
+    },
+    {
+      "name": "text-redact",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "text",
+        "--output",
+        "checked-text"
+      ],
+      "input": "Contact demo@example.org",
+      "status": 0,
+      "stdout": "Contact [PII]",
+      "stderr": "stage=retrieval action=redact findings=1 codes=pii_email\n"
+    },
+    {
+      "name": "text-block",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "text",
+        "--output",
+        "checked-text"
+      ],
+      "input": "ghp_CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+      "status": 1,
+      "stdout": "",
+      "stderr": "stage=retrieval action=block findings=1 codes=secret_github_classic\n"
+    },
+    {
+      "name": "text-invalid-encoding",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "text",
+        "--output",
+        "metadata"
+      ],
+      "input_hex": "ff",
+      "status": 2,
+      "stdout": "stage=retrieval error=invalid_encoding\n",
+      "stderr": ""
+    },
+    {
+      "name": "invalid-command",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "retrieval",
+        "--policy",
+        "privacy",
+        "--format",
+        "json",
+        "--unknown"
+      ],
+      "input": "",
+      "status": 2,
+      "stdout": "",
+      "stderr": "guardtrellis: invalid_command\n"
+    },
+    {
+      "name": "invalid-configuration",
+      "argv": [
+        "check",
+        "--stdin",
+        "--stage",
+        "input",
+        "--policy",
+        "secrets",
+        "--phone-mode",
+        "formatted",
+        "--format",
+        "json"
+      ],
+      "input": "",
+      "status": 2,
+      "stdout": "",
+      "stderr": "guardtrellis: invalid_configuration\n"
+    }
+  ]
+}
