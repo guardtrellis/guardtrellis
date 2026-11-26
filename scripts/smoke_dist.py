@@ -99,11 +99,73 @@ def smoke_cli(python: Path, work: Path) -> None:
     source = work / "fixture with spaces 雪.txt"
     payload = "\ufeffOpening hours\r\n雪\x00\x1b[31m".encode("utf-8")
     source.write_bytes(payload)
+    canary = b"SyntheticCliSmokeCanary91"
+    stripe_source = work / (canary.decode("ascii") + " with spaces 雪.txt")
+    key = b"sk_test_" + b"S" * 24
+    publishable = b"pk_live_" + b"P" * 24
+
+    def metadata(
+        raw: bytes,
+        policy: str,
+        action: str,
+        codes: tuple[str, ...],
+        *,
+        stripe_keys: bool = False,
+        connection_strings: bool = False,
+    ) -> None:
+        # Installed-smoke assertions, not a reusable version-2 application consumer.
+        assert len(raw) <= 128 * 1024 and raw.endswith(b"\n") and raw.count(b"\n") == 1
+        assert b"\r" not in raw and canary not in raw and key not in raw and publishable not in raw
+        assert b"demo@example.org" not in raw and b"SyntheticInstall42" not in raw
+        report = json.loads(raw)
+        assert set(report) == {
+            "report_version",
+            "sdk_version",
+            "stage",
+            "policy",
+            "options",
+            "result",
+            "error",
+        }
+        assert type(report["report_version"]) is int
+        assert report["report_version"] == (2 if stripe_keys else 1)
+        assert report["sdk_version"] == installed_version
+        assert report["stage"] == "retrieval" and report["policy"] == policy
+        options = report["options"]
+        assert set(options) == (
+            {"connection_strings", "phone_mode", "stripe_keys"}
+            if stripe_keys
+            else {"connection_strings", "phone_mode"}
+        )
+        assert type(options["connection_strings"]) is bool
+        assert options["connection_strings"] is connection_strings
+        assert options["phone_mode"] == ("contiguous" if policy == "privacy" else None)
+        if stripe_keys:
+            assert options["stripe_keys"] is True
+        assert report["error"] is None
+        result = report["result"]
+        assert set(result) == {"action", "stage", "findings", "trace"}
+        assert result["action"] == action and result["stage"] == "retrieval"
+        assert [item["code"] for item in result["findings"]] == list(codes)
+        for item in result["findings"]:
+            assert set(item) == {"code", "start", "end", "scanner", "scanner_index", "revision"}
+            if action == "error":
+                assert item["start"] is None and item["end"] is None
+        for item in result["trace"]:
+            assert set(item) == {
+                "scanner",
+                "scanner_index",
+                "action",
+                "revision_before",
+                "revision_after",
+            }
+
     for command in ([str(console)], [str(python), "-I", "-m", "guardtrellis"]):
         version = subprocess.run(
             [*command, "--version"], capture_output=True, cwd=work, timeout=15, check=True
         )
         assert version.stdout.startswith(b"guardtrellis ") and not version.stderr
+        installed_version = version.stdout.removeprefix(b"guardtrellis ").strip().decode("ascii")
         for selection in (["--stdin"], ["--file", str(source)]):
             checked = subprocess.run(
                 [
@@ -158,12 +220,100 @@ def smoke_cli(python: Path, work: Path) -> None:
             )
             assert checked.returncode == status
             assert checked.stdout == (b"Contact [PII]" if status == 0 else b"")
-            assert json.loads(checked.stderr)["result"]["action"] == action
+            metadata(
+                checked.stderr,
+                "privacy",
+                action,
+                ("pii_email",) if status == 0 else ("secret_postgresql_uri",),
+                connection_strings=bool(options),
+            )
+        for data, policy, selected, status, action, expected, codes in (
+            (canary + b" " + key, "secrets", False, 0, "allow", canary + b" " + key, ()),
+            (canary + b" " + key, "secrets", True, 1, "block", b"", ("secret_stripe_secret_test",)),
+            (
+                payload + b" " + canary + b" " + publishable,
+                "secrets",
+                True,
+                0,
+                "allow",
+                payload + b" " + canary + b" " + publishable,
+                (),
+            ),
+            (
+                b"Contact demo@example.org ; " + canary,
+                "privacy",
+                True,
+                0,
+                "redact",
+                b"Contact [PII] ; " + canary,
+                ("pii_email",),
+            ),
+            (
+                canary + b" " + key + b" " + b"rk_test_" + b"Z" * 248,
+                "secrets",
+                True,
+                3,
+                "error",
+                b"",
+                ("stripe_key_limit_exceeded",),
+            ),
+        ):
+            stripe_source.write_bytes(data)
+            for selection in (["--stdin"], ["--file", str(stripe_source)]):
+                checked = subprocess.run(
+                    [
+                        *command,
+                        "check",
+                        *selection,
+                        "--stage",
+                        "retrieval",
+                        "--policy",
+                        policy,
+                        "--format",
+                        "json",
+                        "--output",
+                        "checked-text",
+                        *(["--stripe-keys"] if selected else []),
+                    ],
+                    input=data if selection == ["--stdin"] else b"UnusedStdinCliSmokeCanary92",
+                    capture_output=True,
+                    cwd=work,
+                    timeout=15,
+                )
+                assert checked.returncode == status and checked.stdout == expected
+                metadata(checked.stderr, policy, action, codes, stripe_keys=selected)
+                assert stripe_source.read_bytes() == data
+        marked = subprocess.run(
+            [
+                *command,
+                "check",
+                "--stdin",
+                "--stage",
+                "retrieval",
+                "--policy",
+                "secrets",
+                "--stripe-keys",
+                "--format",
+                "text",
+            ],
+            input=canary,
+            capture_output=True,
+            cwd=work,
+            timeout=15,
+            check=True,
+        )
+        assert marked.stdout == b"stage=retrieval action=allow findings=0 codes= stripe_keys=true\n"
+        assert not marked.stderr
     assert source.read_bytes() == payload
     example = work / "cli_ci.py"
     shutil.copyfile(ROOT / "examples" / "cli_ci.py", example)
-    source.write_bytes(b"Opening hours: 9am to 5pm.")
-    subprocess.run([str(python), "-I", str(example), str(source)], cwd=work, check=True, timeout=20)
+    example_source = work / "ci-example-fixture.txt"
+    example_source.write_bytes(b"Opening hours: 9am to 5pm.")
+    subprocess.run(
+        [str(python), "-I", str(example), str(example_source)], cwd=work, check=True, timeout=20
+    )
+    assert source.read_bytes() == payload
+    assert example_source.read_bytes() == b"Opening hours: 9am to 5pm."
 
 
 def main() -> None:

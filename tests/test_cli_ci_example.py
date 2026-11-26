@@ -39,6 +39,31 @@ def test_real_example_gate(tmp_path, text, clean):
     assert not completed.stdout and not completed.stderr and source.read_bytes() == text
 
 
+@pytest.mark.parametrize("selected", [False, True])
+def test_unchanged_consumer_rejects_real_selected_v2_allow(selected):
+    argv = BASE + ["--connection-strings", "--phone-mode", "formatted"]
+    if selected:
+        argv.append("--stripe-keys")
+    completed = subprocess.run(
+        [sys.executable, "-m", "guardtrellis", *argv],
+        input=b"Opening hours: 9am to 5pm.",
+        capture_output=True,
+        timeout=10,
+        check=False,
+    )
+    assert completed.returncode == 0 and completed.stderr == b""
+    report = json.loads(completed.stdout)
+    assert report["report_version"] == (2 if selected else 1)
+    options = {"connection_strings": True, "phone_mode": "formatted"}
+    if selected:
+        options["stripe_keys"] = True
+    assert report["options"] == options
+    assert report["stage"] == "retrieval" and report["policy"] == "privacy"
+    assert report["error"] is None
+    assert report["result"]["action"] == "allow" and report["result"]["findings"] == []
+    assert cli_ci.clean_privacy_report(completed.stdout) is (not selected)
+
+
 @pytest.mark.parametrize(
     "field,value",
     [

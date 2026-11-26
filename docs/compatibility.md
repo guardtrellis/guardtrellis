@@ -77,8 +77,8 @@ SDK `0.2.0` does not accept the option; package availability is recorded on PyPI
 Disabled calls preserve the existing token/URI behavior and do not acquire Stripe-specific
 work limits. Enabling it selects the
 bounded [Stripe account-key contract](stripe_keys.md), supported token actions and static
-finding/error codes. Existing CLI policies and examples stay unchanged; callers must
-explicitly adopt the new policy and test their own expected data, false positives and
+finding/error codes. That SDK addition left existing CLI policies and examples unchanged;
+callers must explicitly adopt the new policy and test their own expected data, false positives and
 unsupported forms. This does not extend the historical `0.1.x` compatibility promise.
 
 Detection results are not frozen. A correction to a supported pattern, a false-positive
@@ -109,6 +109,28 @@ resolved dependency locks. See the [0.1.12 upgrade note](../CHANGELOG.md#0112).
 Version preparation changes the version constant and package metadata; historical
 measurements retain their actual SDK version. Check
 [package availability](https://pypi.org/project/guardtrellis/) separately.
+
+The [Stripe CLI selection](cli.md) under [#116](https://github.com/guardtrellis/guardtrellis/issues/116)
+is **unreleased source-checkout behavior**, unavailable in the published `0.2.1` CLI.
+It selects the existing account-key detector with BLOCK in either fixed policy; it does
+not change Python API behavior or scanner defaults. Commands without `--stripe-keys`
+retain the exact version-1 envelope and its two option keys. Selected commands use
+version 2 with the same top-level keys and exactly `connection_strings`, `phone_mode`
+and Boolean `stripe_keys: true` in `options`; no version-2 false form is emitted.
+The installed `sdk_version` is independent of report schema version. Valid-configuration
+errors retain the selected schema and format; selected human reports append the static
+` stripe_keys=true` marker before LF. Configuration and checked-output TTY rejections
+still use static ASCII stderr without a structured envelope. Existing stream ordering,
+UTF-8/size bounds and exit statuses continue to apply, including no checked text on
+BLOCK/ERROR and no raw-input fallback.
+
+The unchanged [strict CI example](../examples/cli_ci.py) accepts only its exact
+version-1 schema, rejecting selected version-2 reports even for ALLOW. Consumers adopting
+Stripe selection must explicitly validate version 2, configuration, result/error,
+exit status and delivery; silent downgrade or retry without the selection is unsafe.
+The [accepted contract](cli_stripe_keys_design.md) records these boundaries. Local
+verification of this change does not establish native Windows CI until an authorized
+push is checked, nor does it extend the historical `0.1.x` compatibility promise.
 
 Existing diagnostic keys, value types, and meanings remain supported across `0.1.x`.
 Additional metadata keys and finding codes may be introduced; consumers should tolerate
