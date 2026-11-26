@@ -26,3 +26,5 @@
 /evaluation/stripe_keys/*.md text eol=lf
 /evaluation/stripe_keys/baseline_sdk_0.2.0/*.json text eol=lf
 /evaluation/stripe_keys/baseline_sdk_0.2.0/*.md text eol=lf
+/evaluation/stripe_keys/comparison_source_v1/*.json text eol=lf
+/evaluation/stripe_keys/comparison_source_v1/*.md text eol=lf

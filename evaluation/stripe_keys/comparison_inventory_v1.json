@@ -1,0 +1,922 @@
+{
+  "bounds": {
+    "capture_bytes_per_stream": 65536,
+    "child_wall_seconds": 10,
+    "cleanup_seconds": 5,
+    "combined_report_bytes": 2097152,
+    "parent_seconds_per_pass": 180
+  },
+  "control_workers": [
+    {
+      "cell": 0,
+      "detector_mode": "default",
+      "id": "H01",
+      "kind": "legacy_unicode",
+      "rows": 1
+    },
+    {
+      "cell": 1,
+      "detector_mode": "default",
+      "id": "H02",
+      "kind": "revision_chain",
+      "rows": 1
+    },
+    {
+      "cell": 2,
+      "detector_mode": "default",
+      "id": "H03",
+      "kind": "guard_ingress",
+      "rows": 1
+    },
+    {
+      "cell": 3,
+      "detector_mode": "default",
+      "id": "H04",
+      "kind": "supervised_cleanup",
+      "rows": 1
+    }
+  ],
+  "counts": {
+    "children": 44,
+    "control": 4,
+    "main": 1152,
+    "resource": 32
+  },
+  "dataset_version": "stripe-keys-v1",
+  "main_parent_fields": [
+    "family",
+    "group",
+    "label",
+    "profile",
+    "contract_scope",
+    "detector_mode",
+    "expected_error"
+  ],
+  "main_workers": [
+    {
+      "case_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ],
+      "cell": 0,
+      "detector_mode": "default",
+      "profile": "secret_block",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23",
+        "S24"
+      ],
+      "cell": 1,
+      "detector_mode": "default",
+      "profile": "secret_block",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S25",
+        "S26",
+        "S27",
+        "S28",
+        "S29",
+        "S30",
+        "S31",
+        "S32",
+        "S33",
+        "S34",
+        "S35",
+        "S36"
+      ],
+      "cell": 2,
+      "detector_mode": "default",
+      "profile": "secret_block",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S37",
+        "S38",
+        "S39",
+        "S40",
+        "S41",
+        "S42",
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S47",
+        "S48"
+      ],
+      "cell": 3,
+      "detector_mode": "default",
+      "profile": "secret_block",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ],
+      "cell": 4,
+      "detector_mode": "default",
+      "profile": "secret_redact",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23",
+        "S24"
+      ],
+      "cell": 5,
+      "detector_mode": "default",
+      "profile": "secret_redact",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S25",
+        "S26",
+        "S27",
+        "S28",
+        "S29",
+        "S30",
+        "S31",
+        "S32",
+        "S33",
+        "S34",
+        "S35",
+        "S36"
+      ],
+      "cell": 6,
+      "detector_mode": "default",
+      "profile": "secret_redact",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S37",
+        "S38",
+        "S39",
+        "S40",
+        "S41",
+        "S42",
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S47",
+        "S48"
+      ],
+      "cell": 7,
+      "detector_mode": "default",
+      "profile": "secret_redact",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ],
+      "cell": 8,
+      "detector_mode": "default",
+      "profile": "handoff",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23",
+        "S24"
+      ],
+      "cell": 9,
+      "detector_mode": "default",
+      "profile": "handoff",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S25",
+        "S26",
+        "S27",
+        "S28",
+        "S29",
+        "S30",
+        "S31",
+        "S32",
+        "S33",
+        "S34",
+        "S35",
+        "S36"
+      ],
+      "cell": 10,
+      "detector_mode": "default",
+      "profile": "handoff",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S37",
+        "S38",
+        "S39",
+        "S40",
+        "S41",
+        "S42",
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S47",
+        "S48"
+      ],
+      "cell": 11,
+      "detector_mode": "default",
+      "profile": "handoff",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ],
+      "cell": 0,
+      "detector_mode": "enabled",
+      "profile": "secret_block",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23",
+        "S24"
+      ],
+      "cell": 1,
+      "detector_mode": "enabled",
+      "profile": "secret_block",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S25",
+        "S26",
+        "S27",
+        "S28",
+        "S29",
+        "S30",
+        "S31",
+        "S32",
+        "S33",
+        "S34",
+        "S35",
+        "S36"
+      ],
+      "cell": 2,
+      "detector_mode": "enabled",
+      "profile": "secret_block",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S37",
+        "S38",
+        "S39",
+        "S40",
+        "S41",
+        "S42",
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S47",
+        "S48"
+      ],
+      "cell": 3,
+      "detector_mode": "enabled",
+      "profile": "secret_block",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ],
+      "cell": 4,
+      "detector_mode": "enabled",
+      "profile": "secret_redact",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23",
+        "S24"
+      ],
+      "cell": 5,
+      "detector_mode": "enabled",
+      "profile": "secret_redact",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S25",
+        "S26",
+        "S27",
+        "S28",
+        "S29",
+        "S30",
+        "S31",
+        "S32",
+        "S33",
+        "S34",
+        "S35",
+        "S36"
+      ],
+      "cell": 6,
+      "detector_mode": "enabled",
+      "profile": "secret_redact",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S37",
+        "S38",
+        "S39",
+        "S40",
+        "S41",
+        "S42",
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S47",
+        "S48"
+      ],
+      "cell": 7,
+      "detector_mode": "enabled",
+      "profile": "secret_redact",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ],
+      "cell": 8,
+      "detector_mode": "enabled",
+      "profile": "handoff",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23",
+        "S24"
+      ],
+      "cell": 9,
+      "detector_mode": "enabled",
+      "profile": "handoff",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S25",
+        "S26",
+        "S27",
+        "S28",
+        "S29",
+        "S30",
+        "S31",
+        "S32",
+        "S33",
+        "S34",
+        "S35",
+        "S36"
+      ],
+      "cell": 10,
+      "detector_mode": "enabled",
+      "profile": "handoff",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    },
+    {
+      "case_ids": [
+        "S37",
+        "S38",
+        "S39",
+        "S40",
+        "S41",
+        "S42",
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S47",
+        "S48"
+      ],
+      "cell": 11,
+      "detector_mode": "enabled",
+      "profile": "handoff",
+      "representations": [
+        "plain",
+        "json_literal",
+        "json_escaped",
+        "decoded"
+      ],
+      "rows": 48
+    }
+  ],
+  "original_freeze_sha256": "260c7743a6a45545266989087f0faad26d5cc3d3fd555516aa61ebd262728441",
+  "resource_parent_fields": [
+    "detector_mode"
+  ],
+  "resource_workers": [
+    {
+      "cell": 0,
+      "detector_mode": "default",
+      "id": "R01",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 1,
+      "detector_mode": "default",
+      "id": "R02",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 2,
+      "detector_mode": "default",
+      "id": "R03",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 3,
+      "detector_mode": "default",
+      "id": "R04",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 4,
+      "detector_mode": "default",
+      "id": "R05",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 5,
+      "detector_mode": "default",
+      "id": "R06",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 6,
+      "detector_mode": "default",
+      "id": "R07",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 7,
+      "detector_mode": "default",
+      "id": "R08",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 0,
+      "detector_mode": "enabled",
+      "id": "R01",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 1,
+      "detector_mode": "enabled",
+      "id": "R02",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 2,
+      "detector_mode": "enabled",
+      "id": "R03",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 3,
+      "detector_mode": "enabled",
+      "id": "R04",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 4,
+      "detector_mode": "enabled",
+      "id": "R05",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 5,
+      "detector_mode": "enabled",
+      "id": "R06",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 6,
+      "detector_mode": "enabled",
+      "id": "R07",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    },
+    {
+      "cell": 7,
+      "detector_mode": "enabled",
+      "id": "R08",
+      "interfaces": [
+        "direct",
+        "guard"
+      ],
+      "rows": 2
+    }
+  ],
+  "row_fields": {
+    "cleanup": [
+      "child_reaped",
+      "contract_match",
+      "delivery_integrity",
+      "id",
+      "privacy_ok",
+      "status"
+    ],
+    "control": [
+      "accepted",
+      "action",
+      "consumer_calls",
+      "contract_comparisons",
+      "contract_match",
+      "delivery_integrity",
+      "findings",
+      "id",
+      "privacy_ok"
+    ],
+    "main": [
+      "accepted",
+      "action",
+      "comparisons",
+      "consumer_calls",
+      "contract_comparisons",
+      "contract_match",
+      "delivery_integrity",
+      "findings",
+      "id",
+      "incidental",
+      "primary",
+      "privacy_ok",
+      "representation"
+    ],
+    "resource": [
+      "accepted",
+      "action",
+      "consumer_calls",
+      "contract_comparisons",
+      "contract_match",
+      "delivery_integrity",
+      "error_spanless",
+      "finding_codes",
+      "finding_count",
+      "has_deliverable_text",
+      "id",
+      "input_chars",
+      "mode",
+      "operation_ms",
+      "privacy_ok"
+    ]
+  },
+  "schema_version": 1,
+  "worker_complete_fields": [
+    "event",
+    "count",
+    "limits",
+    "resources",
+    "sdk_version",
+    "sdk_sha256",
+    "runtime_sha256",
+    "detector_mode",
+    "worker_kind",
+    "worker_cell"
+  ],
+  "worker_identity_fields": [
+    "event",
+    "sdk_version",
+    "sdk_sha256",
+    "runtime_sha256",
+    "detector_mode",
+    "worker_kind",
+    "worker_cell"
+  ]
+}

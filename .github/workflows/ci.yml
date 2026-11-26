@@ -144,10 +144,12 @@ jobs:
               "all_children_reaped": all(row["child_reaped"] for row in report["runs"]),
           }, sort_keys=True))
           PY
-      - name: Reproduce frozen Stripe baseline and bounded resource controls
+      - name: Reproduce frozen Stripe baseline and enabled comparison
         run: |
           uv run --frozen python evaluation/stripe_keys/run.py \
             --report-dir '${{ runner.temp }}/guardtrellis-stripe-keys'
+          uv run --frozen python evaluation/stripe_keys/run.py --compare \
+            --report-dir '${{ runner.temp }}/guardtrellis-stripe-comparison'
       - name: Build and install both distributions outside the checkout
         run: |
           uv build --offline --no-build-isolation
