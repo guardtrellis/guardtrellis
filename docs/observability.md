@@ -12,9 +12,10 @@ default, automatic interception or provider integration. The accepted
 [#48 contract](observability_design.md) records the design;
 [#101](https://github.com/sahilmathur254/guardtrellis/issues/101) completed through
 [PR #103](https://github.com/sahilmathur254/guardtrellis/pull/103) on 2026-11-17.
-The recipe is merged source work after the `0.2.0` release. It can contribute to a possible
-`0.2.1` batch, with no version-bump or publication commitment. See
-[verification status](#verification-status).
+The recipe is included in the `0.2.1` source batch. Check
+[PyPI](https://pypi.org/project/guardtrellis/) for package availability; examples are run
+from a source checkout. See [verification status](#verification-status) for the dated
+implementation evidence.
 
 ## Start with telemetry disabled
 

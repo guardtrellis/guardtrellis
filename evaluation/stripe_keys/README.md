@@ -3,9 +3,12 @@
 Evaluation-only contribution to [#109](https://github.com/guardtrellis/guardtrellis/issues/109)
 and the wider [#45](https://github.com/guardtrellis/guardtrellis/issues/45) program under
 the [accepted Stripe contract](../../docs/stripe_keys_design.md). The original SDK 0.2.0
-baseline remains unchanged. The local, unreleased #110 implementation adds an explicit
-opt-in and a separate default/enabled comparison after acceptance of that baseline.
-Published 0.2.0 does not accept the new argument.
+baseline remains unchanged. The #110 implementation, merged through
+[PR #113](https://github.com/guardtrellis/guardtrellis/pull/113), adds an explicit opt-in
+in the `0.2.1` source and a separate default/enabled comparison after baseline acceptance.
+SDK `0.2.0` does not accept the new argument. Check
+[PyPI](https://pypi.org/project/guardtrellis/) for published availability; source merges
+and candidate checks do not establish an index upload.
 
 Forty-eight original Codex-assisted synthetic development scenarios cover four sensitive
 test/live prefixes, publishable controls, benign lookalikes, malformed/overlong forms,
@@ -22,8 +25,10 @@ uv run --frozen python evaluation/stripe_keys/run.py \
 ```
 
 Choose a directory that does not exist. Existing reports and historical evidence are
-never replaced. The native CI matrix includes this full command; only an actual later
-authorized submission can establish Windows/macOS/Linux and processed CodeQL results.
+never replaced. The native CI matrix includes this full command. Baseline PR #111 and
+implementation PR #113 have separate submitted-revision CI records; retained local reports
+alone do not establish native Windows/macOS/Linux or processed CodeQL results. Final
+release-candidate validation also retains its own source identity.
 
 ## Freeze and matrix
 
@@ -39,11 +44,11 @@ explicit new version or erratum retaining the original frozen assets and evidenc
 | Category | Count | Interpretation |
 | --- | ---: | --- |
 | Authored scenarios | 48 | 24 prefix/length, 12 benign-context and 12 mixed/malformed/span scenarios; development cases, not independent external authorship. |
-| Current-default main observations | 576 | 48 scenarios × four representations × three profiles; correlated observations. |
-| Current-default resource observations | 16 | Eight recipes × direct/Guard calls; separate from detection accuracy. |
+| Baseline/default main observations | 576 | 48 scenarios × four representations × three profiles; correlated observations. |
+| Baseline/default resource observations | 16 | Eight recipes × direct/Guard calls; separate from detection accuracy. |
 | Harness controls | 4 | Legacy Unicode spans, preceding-redactor revision, Guard ingress and supervised cleanup; separate from detection accuracy. |
-| Future main comparison | 1,152 | Fresh default/enabled comparison only after the real SDK option exists; not executed by this baseline. |
-| Future resource comparison | 32 | Both modes × eight recipes × direct/Guard; not executed by this baseline. |
+| Default/enabled main comparison | 1,152 | Separate comparison of the real opt-in implementation against the same frozen cases; not part of the original baseline. |
+| Default/enabled resource comparison | 32 | Both modes × eight recipes × direct/Guard; separate from the baseline and detection accuracy. |
 
 The profiles are default secret BLOCK, secret REDACT, and secret BLOCK followed by
 default PII REDACT, each at RETRIEVAL with an 8,192-character Guard cap. They are dedicated
@@ -75,12 +80,12 @@ Reports omit raw/checked text, credential fragments, replacements, exception mes
 environment values and arbitrary host paths. Actual runtime/source identity is recorded
 separately from the original frozen base commit.
 
-Design acceptance does not accept the baseline or authorize #110, commit, push, merge
-or publication. Local verification and actual submitted-revision CI remain separate.
-That sentence records the original evaluation gate: #109 was subsequently accepted/merged
-through #111; the maintainer separately accepted #110's implementation plan on 2026-11-25
-and authorized local implementation/comparison. Commit/push, merge and publication of #110
-remain on hold.
+The original evaluation gate separated design acceptance, baseline acceptance and #110
+implementation authorization. The maintainer subsequently accepted #109 through merged
+[PR #111](https://github.com/guardtrellis/guardtrellis/pull/111), accepted #110's plan on
+2026-11-25 and separately authorized its implementation/comparison. That implementation
+merged through PR #113 on 2026-11-26. Local verification, submitted-revision CI, source
+merges and package publication retain separate evidence.
 
 ## Retained local baseline
 
@@ -100,27 +105,31 @@ H04 timeout. No unexpected SDK errors, incomplete observations, privacy failures
 checked-delivery integrity failures occurred. H03's Guard ingress ERROR is an expected
 separate control, not a main-matrix error or detection.
 
-The unchanged SDK has no Stripe-specific detector: **0 TP, 0 FP, 156 TN and 420 FN**
+The historical SDK 0.2.0 baseline had no Stripe-specific detector:
+**0 TP, 0 FP, 156 TN and 420 FN**
 across the correlated main observations. Those 420 sensitive observations include
 supported-shape candidates, unsupported disclosures and raw no-decoding controls; this
 is not a representative accuracy estimate. Thirty observations had incidental legacy
 secret or PII findings, which were not credited as Stripe detections. Exact desired
-complete protection/delivery matched 153/576 observations. Current-contract conformance
-does not mean the desired Stripe protection is already implemented.
+complete protection/delivery matched 153/576 observations. Historical baseline-contract
+conformance did not establish the desired Stripe protection.
 
 Local macOS/Python 3.12 verification passed 121 focused Stripe evaluation regressions
 plus 226 existing resource/detector-delivery/retrieval-tool evaluation regressions with
 warnings treated as errors. Repository Ruff lint/format checks and existing SDK mypy
-checks passed. Native Windows launching is covered by a local simulation and existing
-launcher reuse; native Windows/macOS/Linux CI and Python/Actions CodeQL for this patch
-remain pending an authorized commit/push. No full-suite, native Windows or release pass
-is inferred from these local checks. Baseline acceptance remains with the maintainer.
+checks passed. At that local capture, native Windows launching had a local simulation
+and existing launcher reuse; submitted Windows/macOS/Linux CI, Python/Actions CodeQL
+and maintainer baseline acceptance remained separate gates. Their later completion is
+recorded by PR #111. No full-suite, native Windows or release pass is inferred from
+these retained local checks.
 
-## Unreleased #110 implementation comparison
+## #110 implementation comparison
 
 The maintainer accepted #109 through #111 and authorized the local implementation on
-2026-11-25. Published 0.2.0 still has no `stripe_keys` option. The source implementation
-and this separately retained comparison are not package-publication evidence.
+2026-11-25. The comparison was captured before package publication with SDK version
+fields reading 0.2.0; that published version has no `stripe_keys` option. The implementation
+subsequently merged through PR #113 as a `0.2.1` source addition. This separately retained
+comparison is not package-publication evidence.
 
 ```sh
 uv run --frozen python evaluation/stripe_keys/run.py --compare \
@@ -160,12 +169,23 @@ The unchanged default-only command also matched all 576 main / 16 resource / fou
 contracts under the new source. All fourteen earlier evaluation commands passed. Local
 strict regressions passed 2,563 checks, including 201 new SDK and 41 new comparison checks.
 The original 0.2.0 baseline, accepted design, seven frozen input assets and manifest remain
-byte-identical. Source version still reads 0.2.0; actual implementation head/base, dirty
-state and SDK/source hashes distinguish these unreleased bytes from published 0.2.0.
+byte-identical. At comparison capture, the source version read 0.2.0; actual implementation
+head/base, dirty state and SDK/source hashes distinguish those source bytes from published
+0.2.0. Retained version fields and hashes are not rewritten for a later release candidate.
 Parent-only VCS provenance and child-verified source identity avoid nested Git processes
 inside timed workers.
 
-Native Windows launching has local protocol/cleanup regressions, including the comparison
-selector. Actual submitted-revision Windows/macOS/Linux and processed Python/Actions
-CodeQL remain pending commit/push authorization. Version/changelog synchronization and
-publication remain separate release-preparation gates.
+## Implementation PR validation and release availability
+
+PR #113 merged on 2026-11-26 at `9087fdb97dce3ae60b527e5dbbca11848cecb622` after all
+17 active checks passed on reviewed head `a4a9e77d9745ddefd2594390aca733e87d12c6ea`.
+The [native PR matrix](https://github.com/guardtrellis/guardtrellis/actions/runs/45613735598),
+[processed Python/Actions CodeQL](https://github.com/guardtrellis/guardtrellis/actions/runs/45613735643)
+and [candidate installation checks](https://github.com/guardtrellis/guardtrellis/actions/runs/45613735533)
+identify that submitted revision. Windows passed 2,474 tests with 89 expected
+platform-specific skips; all 201 new SDK and 41 new comparison regressions ran.
+
+The `0.2.1` source adds the opt-in mode; check PyPI for package availability. Final
+release-candidate/main CI, TestPyPI rehearsal and same-artifact PyPI promotion must identify
+their own source/artifact evidence. Neither the retained 0.2.0-labelled reports nor PR
+validation establish publication of a later package.
