@@ -1,8 +1,36 @@
 # Changelog
 
 See [PyPI](https://pypi.org/project/guardtrellis/) for package availability and
-[GitHub releases](https://github.com/sahilmathur254/guardtrellis/releases) for published
+[GitHub releases](https://github.com/guardtrellis/guardtrellis/releases) for published
 artifacts and verification evidence.
+
+## 0.2.1
+
+- Add opt-in local detection for selected Stripe secret/restricted test/live account-key
+  shapes through `SecretScanner(stripe_keys=True)`, with complete supported spans,
+  checked blocking/redaction and bounded input/candidate/attempt work. Preserve disabled
+  defaults and publishable-key handling. Retain the frozen 48-scenario baseline and
+  versioned default/enabled comparisons, including expected errors, false positives,
+  unsupported misses and partial protection.
+- Add an application-owned, disabled-by-default metrics recipe for synchronous checked
+  retrieval handoffs, with explicit optional source-checkout dependency profiles and
+  exported-metadata privacy/fault regressions. No installed telemetry API, automatic
+  interception, payload capture or tracing is added.
+- Validate both existing OpenAI/Azure examples against isolated direct-minimum and locked
+  dependency profiles, including no-network construction, request/delivery, cleanup and
+  wheel/sdist installation regressions. Preserve their mocked-verification scope and
+  existing dependency requirements. Refresh canonical package links for the organization
+  repository and roadmap.
+
+Upgrade note: existing scanner defaults, CLI policies, core dependencies and optional
+dependency ranges are unchanged. Stripe detection is disabled unless explicitly selected;
+applications should test their own supported formats and consume only checked values.
+Detection covers the documented ASCII shapes, not credential validity, webhook or
+organization keys, generic secrets or implicitly decoded JSON. Limit ERROR outcomes
+withhold checked text and are not detections. The metrics helper remains a source recipe,
+and provider profiles do not establish live-service behavior or compatibility across
+every allowed dependency version. See the [Stripe guide](docs/stripe_keys.md),
+[metrics guide](docs/observability.md) and [provider profiles](docs/openai.md#isolated-compatibility-profiles).
 
 ## 0.2.0
 

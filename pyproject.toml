@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "guardtrellis"
-version = "0.2.0"
+version = "0.2.1"
 description = "Provider-independent local checks for model inputs, outputs, retrieval, and tool calls"
 authors = [{ name = "Sahil Mathur" }]
 readme = "README.md"
@@ -30,7 +30,7 @@ Source = "https://github.com/guardtrellis/guardtrellis"
 Issues = "https://github.com/guardtrellis/guardtrellis/issues"
 Documentation = "https://github.com/guardtrellis/guardtrellis/blob/main/docs/api.md"
 Changelog = "https://github.com/guardtrellis/guardtrellis/blob/main/CHANGELOG.md"
-Roadmap = "https://github.com/users/sahilmathur254/projects/3"
+Roadmap = "https://github.com/orgs/guardtrellis/projects/1"
 
 [project.optional-dependencies]
 fastapi = ["fastapi>=0.115,<1", "httpx>=0.27,<1", "uvicorn>=0.30,<1"]

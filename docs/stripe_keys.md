@@ -1,7 +1,9 @@
-# Stripe account-key shapes (unreleased source checkout)
+# Stripe account-key shapes (0.2.1)
 
-This option exists in the local #110 implementation source. Published GuardTrellis 0.2.0
-does not accept `stripe_keys`; release preparation and publication are separate steps.
+The opt-in `stripe_keys` option is a `0.2.1` addition, merged through
+[PR #113](https://github.com/guardtrellis/guardtrellis/pull/113). SDK `0.2.0` does not accept
+the argument. Check [PyPI](https://pypi.org/project/guardtrellis/) for published availability;
+a source merge or passing candidate checks does not establish package publication.
 
 Select `SecretScanner(stripe_keys=True)` where your application explicitly checks text.
 It adds local detection for selected Stripe secret/restricted test/live account-key shapes.
@@ -104,14 +106,20 @@ Sync execution has no new hard deadline; caller-owned isolation remains separate
 The [accepted contract](stripe_keys_design.md), [implementation plan](stripe_keys_implementation_plan.md)
 and [versioned evaluation](../evaluation/stripe_keys/README.md) distinguish desired protection,
 format-contract conformance, incidental findings and checked delivery. Original frozen
-cases/expectations and SDK 0.2.0 baseline remain unchanged. New default/enabled comparisons
-must identify the actual unreleased source/runtime and retain expected errors, unsupported
+cases/expectations and SDK 0.2.0 baseline remain unchanged. Default/enabled comparisons
+identify the actual source/runtime and retain expected errors, unsupported
 misses, partial redactions and contextual false positives. Public AI-assisted synthetic
 development cases do not establish population accuracy or production safety.
 
-The retained [unreleased comparison](../evaluation/stripe_keys/comparison_source_v1/REPORT.md)
+The retained [source comparison](../evaluation/stripe_keys/comparison_source_v1/REPORT.md)
 matched all 1,152 main, 32 resource and four control contracts, including 39 expected main
 limit ERROR outcomes. Known false positives, unsupported misses and partial protection
-remain visible. Local strict tests passed 2,563 checks; actual submitted-revision native
-Windows/macOS/Linux and processed CodeQL are pending separate commit/push authorization.
-Implementation review, version preparation and publication are separate gates.
+remain visible. Its recorded local validation passed 2,563 strict checks; the comparison
+retains its original 0.2.0 version field and source hashes rather than being relabelled.
+
+Implementation merged through PR #113 at `9087fdb97dce3ae60b527e5dbbca11848cecb622` on
+2026-11-26. All 17 active PR checks passed, including the
+[native matrix](https://github.com/guardtrellis/guardtrellis/actions/runs/45613735598),
+[processed Python/Actions CodeQL](https://github.com/guardtrellis/guardtrellis/actions/runs/45613735643)
+and separate candidate installation checks. These validate the reviewed PR revision;
+final release-candidate checks, index verification and publication remain separate evidence.

@@ -9,7 +9,10 @@ Availability is recorded on [PyPI](https://pypi.org/project/guardtrellis/).
 ## Current release and maintenance
 
 [`0.2.0`](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0) was published
-on 2026-11-09. Maintenance follows `main` and the latest published release under the
+on 2026-11-09. The `0.2.1` source additions are described in the
+[changelog](../CHANGELOG.md#021); check [PyPI](https://pypi.org/project/guardtrellis/) for
+the current published version. Source merges and candidate CI do not establish an index
+upload. Maintenance follows `main` and the latest published release under the
 existing [security maintenance decision](../SECURITY.md#supported-versions). Older patches
 or series have no promised parallel backport line, support lifetime or response deadline;
 continued maintenance would require a separate announcement.
@@ -69,9 +72,10 @@ intentional placeholder false positives, and raw-versus-decoded JSON boundaries 
 adoption. See the [connection-URI guide](connection_strings.md) and
 [0.1.8 release record](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.1.8).
 
-The unreleased source checkout adds `SecretScanner(stripe_keys=False)` as another explicit
-opt-in. Published 0.2.0 does not accept the option. Disabled calls preserve the existing
-token/URI behavior and do not acquire Stripe-specific work limits. Enabling it selects the
+The `0.2.1` source adds `SecretScanner(stripe_keys=False)` as another explicit opt-in.
+SDK `0.2.0` does not accept the option; package availability is recorded on PyPI.
+Disabled calls preserve the existing token/URI behavior and do not acquire Stripe-specific
+work limits. Enabling it selects the
 bounded [Stripe account-key contract](stripe_keys.md), supported token actions and static
 finding/error codes. Existing CLI policies and examples stay unchanged; callers must
 explicitly adopt the new policy and test their own expected data, false positives and
@@ -131,8 +135,8 @@ Any wider promise for `1.0.0` will be stated explicitly when that release is pre
   beyond SDK 3/HTTPX2, require a later minor release and migration notes. A patch may raise
   a dependency minimum to obtain a correctness or security fix; the changelog must identify
   the new requirement. Python-version support and the public API promise still apply.
-- Maintenance targets `main` and the latest published release, currently
-  [`0.2.0`](https://github.com/sahilmathur254/guardtrellis/releases/tag/v0.2.0). Backports to
+- Maintenance targets `main` and the latest published release listed on
+  [PyPI](https://pypi.org/project/guardtrellis/). Backports to
   older patches or series are not guaranteed; continued older-series maintenance requires
   a separate announcement. No response deadline, support lifetime or availability SLA is promised.
 

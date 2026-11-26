@@ -9,39 +9,49 @@ and proposed tool calls. Policies are explicit, composable, and independent of m
 
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/guardtrellis?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/guardtrellis)
 
-The documented public API is supported across `0.1.x` under the
-[compatibility policy](https://github.com/guardtrellis/guardtrellis/blob/main/docs/compatibility.md).
+See the [compatibility policy](https://github.com/guardtrellis/guardtrellis/blob/main/docs/compatibility.md)
+for the historical `0.1.x` API promise and current maintenance scope.
 Supported Python: 3.11–3.14. Apache-2.0 licensed.
 
 <!-- guardtrellis-release:start -->
-**Version: `0.2.0`.** See [PyPI](https://pypi.org/project/guardtrellis/0.2.0/)
+**Version: `0.2.1`.** See [PyPI](https://pypi.org/project/guardtrellis/0.2.1/)
 for availability and [release notes](https://github.com/guardtrellis/guardtrellis/releases).
 A source checkout may describe a candidate that has not been published yet.
 
 Install this version in an activated virtual environment:
 
 ```sh
-python -m pip install 'guardtrellis==0.2.0'
+python -m pip install 'guardtrellis==0.2.1'
 ```
 
 An explicit version opts into a prerelease when applicable. Optional integrations:
-`'guardtrellis[fastapi]==0.2.0'`,
-`'guardtrellis[langgraph]==0.2.0'`,
-`'guardtrellis[openai]==0.2.0'`,
-`'guardtrellis[gemini]==0.2.0'`.
+`'guardtrellis[fastapi]==0.2.1'`,
+`'guardtrellis[langgraph]==0.2.1'`,
+`'guardtrellis[openai]==0.2.1'`,
+`'guardtrellis[gemini]==0.2.1'`.
 <!-- guardtrellis-release:end -->
 
 ## Included capabilities
 
-- A [frozen synchronous scan baseline](evaluation/scan_performance/README.md) with
+- Explicit [Stripe account-key detection](https://github.com/guardtrellis/guardtrellis/blob/main/docs/stripe_keys.md), added in `0.2.1`, for
+  selected secret/restricted test/live shapes with bounded work and checked delivery.
+  It is disabled by default; publishable keys add no Stripe finding. The
+  [frozen comparison](https://github.com/guardtrellis/guardtrellis/blob/main/evaluation/stripe_keys/README.md) retains false positives,
+  unsupported misses, partial redactions and expected limit errors.
+- An optional [retrieval-check metrics recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/observability.md) with controlled
+  metadata-only measurements, checked handoff and disabled-by-default telemetry.
+  This is a source-checkout recipe, not an installed SDK instrumentation API.
+- Isolated [OpenAI/Azure compatibility profiles](https://github.com/guardtrellis/guardtrellis/blob/main/docs/openai.md#isolated-compatibility-profiles)
+  for the declared minimum and current lock, with mocked requests and fresh package installs.
+- A [frozen synchronous scan baseline](https://github.com/guardtrellis/guardtrellis/blob/main/evaluation/scan_performance/README.md) with
   18 comparable policy/size/action cells and four separate URI controls, retaining
   descriptive timings, exact checked outcomes and bounded cleanup evidence.
-- A [selected OWASP control mapping](docs/coverage.md#selected-owasp-2025-mitigation-mapping)
+- A [selected OWASP control mapping](https://github.com/guardtrellis/guardtrellis/blob/main/docs/coverage.md#selected-owasp-2025-mitigation-mapping)
   linking configured behavior and existing evidence to application-owned controls.
-- A core [local policy CLI](docs/cli.md), added in `0.1.9`,
+- A core [local policy CLI](https://github.com/guardtrellis/guardtrellis/blob/main/docs/cli.md), added in `0.1.9`,
   with explicit file/stdin and stage selection, fixed secrets/privacy policies,
   metadata reports and opt-in checked text for pipes/files.
-- A [48-scenario evaluation batch](evaluation/detector_delivery/README.md) for
+- A [48-scenario evaluation batch](https://github.com/guardtrellis/guardtrellis/blob/main/evaluation/detector_delivery/README.md) for
   `0.1.9`, with pre-observation expectations, default/opt-in comparisons and separate
   detector, complete-redaction and checked-delivery results. #45 tracks CI/review evidence.
 - A [policy and operations recipe](https://github.com/guardtrellis/guardtrellis/blob/main/docs/policy_operations.md)
@@ -97,7 +107,7 @@ both sync and async callbacks work there. Provider SDKs are not required by the 
 | Check | Default | Scope |
 | --- | --- | --- |
 | `PIIScanner` | redact | ASCII email, contiguous international phone by default, opt-in formatted phone, US SSN shapes |
-| `SecretScanner` | block | Selected GitHub tokens, AWS access-key IDs, PEM private keys; opt-in connection URIs |
+| `SecretScanner` | block | Selected GitHub tokens, AWS access-key IDs, PEM private keys; opt-in connection URIs and Stripe account-key shapes |
 | `InvisibleScanner` | warn | Unicode control/format characters except tab and newlines |
 | `LiteralScanner([...])` | block | Configured literal substrings; optional ASCII case folding |
 | `JSONScanner(schema)` | block invalid data | Strict JSON and constrained Draft 2020-12 schemas |
@@ -119,6 +129,11 @@ It preserves complete URI finding spans, applies bounded local scanning, and mak
 database or credential checks. Templates can block intentionally, and escaped JSON still
 needs explicit application-owned decoding. The [connection-URI guide](https://github.com/guardtrellis/guardtrellis/blob/main/docs/connection_strings.md)
 defines supported syntax, exclusions, private processing limits and safe tool-result use.
+
+Select `SecretScanner(stripe_keys=True)` in `0.2.1` to check supported Stripe secret and
+restricted test/live key shapes. Defaults remain unchanged. The [Stripe guide](https://github.com/guardtrellis/guardtrellis/blob/main/docs/stripe_keys.md)
+defines exact boundaries, current-revision spans, explicit actions and processing limits;
+it does not validate credentials or cover webhook, organization-key or encoded forms.
 
 ```python
 from guardtrellis import Action, Guard, JSONScanner, LiteralScanner, Stage, ToolGuard
@@ -221,7 +236,7 @@ validates and authorizes a call, executes it, then checks its returned text at `
 before the next consumer receives it. It uses core dependencies and the current public APIs.
 The host must route every raw-return path through this check; it cannot undo execution side effects.
 
-The optional [metrics-only sibling](docs/observability.md) observes that retrieval scan's
+The optional [metrics-only sibling](https://github.com/guardtrellis/guardtrellis/blob/main/docs/observability.md) observes that retrieval scan's
 count, outcome and elapsed time while preserving checked consumption. Telemetry is disabled
 by default; the source-checkout `observability` group enables an in-memory demonstration
 with a complete exported-metadata allowlist. Host telemetry configuration and lifecycle

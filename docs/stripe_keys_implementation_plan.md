@@ -1,7 +1,11 @@
 # Stripe account-key detection: #110 implementation plan
 
-Status: **Plan accepted by the maintainer, 2026-11-25; local implementation complete,
-awaiting review and separately authorized submission/native CI.**
+Status: **Plan accepted by the maintainer, 2026-11-25; implementation merged through
+[PR #113](https://github.com/guardtrellis/guardtrellis/pull/113), 2026-11-26.**
+
+The implementation steps below retain the accepted plan's behavior and original release
+sequencing. Dated validation and merge records distinguish that snapshot from the `0.2.1`
+release closeout. Check [PyPI](https://pypi.org/project/guardtrellis/) for package availability.
 
 Acceptance covers the reviewed plan snapshot SHA-256
 `fec9574a358c11332136d045e55acac6575dd402726f065801176df709c2eb43`.
@@ -12,12 +16,13 @@ aligns [#110](https://github.com/guardtrellis/guardtrellis/issues/110) with the
 [#109 baseline](https://github.com/guardtrellis/guardtrellis/issues/109).
 The baseline merged through [#111](https://github.com/guardtrellis/guardtrellis/pull/111)
 at `1a2f11ab580e17b2e68b67c1e21ce3d3935d50c3`; native matrix and processed Python/Actions
-CodeQL passed on that exact main commit. Current SDK/package version remains 0.2.0.
+CodeQL passed on that exact main commit. The accepted baseline and implementation work
+used SDK/package version 0.2.0.
 
-The maintainer subsequently authorized local implementation, regressions, comparisons,
-documentation and issue/organization-board tracking. Frozen evidence, dependency bounds,
-versions and existing CLI policies stay unchanged. Commit, push, merge and publication
-remain on hold.
+At plan acceptance, the maintainer authorized local implementation, regressions, comparisons,
+documentation and issue/organization-board tracking while preserving frozen evidence,
+dependency bounds, versions and existing CLI policies. Commit/push, merge and publication
+were separate later gates; the closeout below records the implementation's subsequent merge.
 
 ## Fixed behavior and exclusions
 
@@ -194,15 +199,33 @@ rehearsal and same-artifact PyPI promotion under separate authorization.
 
 ## Acceptance and next action
 
-The #109 design/baseline gate is satisfied. The maintainer accepted this implementation
-plan on 2026-11-25 and authorized local SDK implementation. Local implementation and
-validation are now reviewable; track #110 as **In review**, Now/P2. Submitted-revision native
-CI, commit/push, merge and publication remain separate gates.
+The #109 design/baseline gate was satisfied before implementation. The maintainer accepted
+this plan on 2026-11-25 and authorized local SDK implementation. At local validation,
+#110 was **In review**, Now/P2; submitted-revision native CI, commit/push, merge and
+publication remained separate gates.
 
 The local evidence includes 2,563 strict tests, the fourteen prior evaluation commands,
 unchanged default Stripe replay and the retained 1,152-main/32-resource/four-control
 comparison. Its [pre-observation receipt](https://github.com/guardtrellis/guardtrellis/issues/110#issuecomment-7159776116)
 precedes all formal enabled observations; original frozen bytes and baseline were preserved.
-See the [comparison record](../evaluation/stripe_keys/README.md#unreleased-110-implementation-comparison)
-for retained limitations, expected errors and source/runtime provenance. This is local
-unreleased-source evidence, not native CI or publication acceptance.
+See the [comparison record](../evaluation/stripe_keys/README.md#110-implementation-comparison)
+for retained limitations, expected errors and source/runtime provenance. That dated local
+source evidence is separate from native CI and publication acceptance.
+
+## Merge and 0.2.1 release closeout (2026-11-26)
+
+Implementation merged through PR #113 at `9087fdb97dce3ae60b527e5dbbca11848cecb622`.
+All 17 active checks passed on reviewed head `a4a9e77d9745ddefd2594390aca733e87d12c6ea`,
+including the [native PR matrix](https://github.com/guardtrellis/guardtrellis/actions/runs/45613735598),
+[processed Python/Actions CodeQL](https://github.com/guardtrellis/guardtrellis/actions/runs/45613735643)
+and [candidate installation checks](https://github.com/guardtrellis/guardtrellis/actions/runs/45613735533).
+Windows passed 2,474 tests with 89 expected platform-specific skips; all 201 new SDK and
+41 new comparison regressions ran. These results identify the reviewed PR revision,
+not a later release-preparation commit.
+
+The `0.2.1` closeout owns version/changelog/generated-pin/lock synchronization and current
+availability wording. It does not change the accepted contract, scanner behavior, dependency
+bounds or retained baseline/comparison bytes. Historical snapshots keep the 0.2.0 version
+fields and source hashes they actually observed. Final candidate/main validation, TestPyPI
+rehearsal and same-artifact PyPI verification retain their own commit/run evidence;
+this plan and its merge do not establish an index upload.

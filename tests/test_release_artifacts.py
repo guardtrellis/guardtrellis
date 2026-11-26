@@ -542,8 +542,8 @@ def test_publishing_repository_matches_canonical_package_and_generated_links():
     assert project["urls"]["Documentation"] == f"{repository_url}/blob/main/docs/api.md"
     assert project["urls"]["Changelog"] == f"{repository_url}/blob/main/CHANGELOG.md"
     assert f"[release notes]({repository_url}/releases)" in release.release_block(project)
-    # A repository transfer does not move the separately owned personal Project.
-    assert project["urls"]["Roadmap"] == "https://github.com/users/sahilmathur254/projects/3"
+    # The organization roadmap was copied separately; the personal Project is preserved.
+    assert project["urls"]["Roadmap"] == "https://github.com/orgs/guardtrellis/projects/1"
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="Executes an Ubuntu workflow shell command")

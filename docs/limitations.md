@@ -52,10 +52,11 @@ the callback or data captured by provider instrumentation. There is no streaming
   differences in raw JSON. The opt-in enforces private input,
   candidate-length and candidate-count limits even on direct scanner calls or when
   `Guard.max_chars` is larger. Budget overflow is an ERROR with no checked output.
-- Stripe account keys (unreleased source checkout): explicit [`stripe_keys=True`](stripe_keys.md)
+- Stripe account keys (0.2.1 source): explicit [`stripe_keys=True`](stripe_keys.md)
   selects only secret/restricted test/live shapes with 10–247 ASCII alphanumeric suffixes
-  and exact ASCII delimiters. Published 0.2.0 does not accept the option. Publishable prefixes
-  add no Stripe finding; well-shaped documentation/placeholders can still be false positives.
+  and exact ASCII delimiters. SDK `0.2.0` does not accept the option; check
+  [PyPI](https://pypi.org/project/guardtrellis/) for availability. Publishable prefixes add
+  no Stripe finding; well-shaped documentation/placeholders can still be false positives.
   Malformed shapes within the work budget produce no Stripe finding. Unsupported masked,
   split, Unicode, encoded, webhook/organization/prod and other-vendor forms can be missed or
   only partly redacted. No credential validity, implicit JSON decoding or normalization.
